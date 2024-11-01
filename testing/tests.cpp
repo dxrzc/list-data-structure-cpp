@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../list.h"
+#include "list.h"
 #include "helpers/resource.h"
 
 using intlist = list<int>;
