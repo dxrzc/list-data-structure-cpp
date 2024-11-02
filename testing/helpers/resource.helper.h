@@ -1,5 +1,6 @@
 #pragma once
-#include "../../list/list.h"
+
+#include "list.h"
 #include <gtest/gtest.h>
 #include <cassert>
 
@@ -18,10 +19,6 @@ public:
 	testResource(const testResource& res) :testvalue(res.testvalue) { ++copyConstructor; }
 	testResource(testResource&& res) noexcept : testvalue(std::move(res.testvalue)) { ++movementConstructor; }
 };
-
-unsigned testResource::copyConstructor = 0;
-unsigned testResource::movementConstructor = 0;
-unsigned testResource::instancesCreated = 0;
 
 class testResourceList : public ::testing::Test
 {
