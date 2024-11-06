@@ -2,22 +2,25 @@
 #include "../helpers/intlist.typealias.helper.h"
 #include "../helpers/resource.helper.h"
 
-TEST(emplace_front, shouldInsertInTheFront)
+TEST(emplace_front, should_insert_sucessfully)
 {
-	const int newvalue = 4;
-	intlist testlist{ 1,2,3 };
-	testlist.emplace_front(newvalue);
-	EXPECT_EQ(testlist.front(), newvalue);
+	const int new_value = 5;
+	intlist list{ 1,2,3 };
+	list.emplace_front(new_value);
+	EXPECT_EQ(list.front(), new_value);
 }
 
-TEST_F(test_resource_list, dontCopyUsingEmplaceFront)
+TEST_F(test_resource_list, emplace_front_should_not_copy)
 {
+	// constructs a test_resource(100)
 	test_list.emplace_front(100);
 	EXPECT_EQ(test_resource::instances_created, 1);
 }
 
-TEST_F(test_resource_list, updateNelmsUsingEmplaceFront)
+TEST(emplace_front, should_update_nelms)
 {
-	test_list.emplace_front(100);
-	EXPECT_EQ(test_list.size(), 1);
+	intlist list{ 1,2,3 };
+	const std::size_t current_size = list.size();
+	list.emplace_front(1);
+	EXPECT_EQ(list.size(), current_size + 1);
 }
