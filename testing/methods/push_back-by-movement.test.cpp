@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
-#include "../helpers/intlist.typealias.helper.h"
-#include "../helpers/resource.helper.h"
+#include "intlist.typealias.helper.h"
+#include "resource.helper.h"
 
-TEST(push_backByMovement, shouldInsertInTheBack)
+TEST(push_back_by_mov, should_push_back)
 {
 	int newvalue = 4;
 	intlist testlist{ 1,2,3 };
@@ -10,7 +10,7 @@ TEST(push_backByMovement, shouldInsertInTheBack)
 	EXPECT_EQ(testlist.back(), newvalue);
 }
 
-TEST_F(test_resource_list, pushBackDontCopyUsingStdMove)
+TEST_F(test_resource_list, push_back_by_mov_should_not_copy_but_move)
 {
 	test_resource resource;
 	test_list.push_back(std::move(resource));
@@ -18,9 +18,10 @@ TEST_F(test_resource_list, pushBackDontCopyUsingStdMove)
 	EXPECT_EQ(test_resource::movement_constructor, 1);
 }
 
-TEST_F(test_resource_list, updateNelmsUsingPushBackbyMovement)
+TEST(push_back_by_mov, should_update_nelms)
 {
-	test_resource resource;
-	test_list.push_back(std::move(resource));
-	EXPECT_EQ(test_list.size(), 1);
+	intlist list{ 1,2,3 };
+	const std::size_t current_size = list.size();
+	list.push_back(std::move(4));
+	EXPECT_EQ(list.size(), current_size + 1);
 }
