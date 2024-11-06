@@ -1,14 +1,13 @@
 #include <gtest/gtest.h>
 #include "../helpers/intlist.typealias.helper.h"
 
-TEST(empty, shouldReturnFalseIfListNotEmpty)
+TEST(empty, should_return_false_if_list_not_empty)
 {
-	intlist list;
-	list.push_back(1);
+	intlist list{ 1,2,3 };
 	EXPECT_FALSE(list.empty());
 }
 
-TEST(empty, shouldReturnTrueIfListEmpty)
+TEST(empty, should_return_true_if_list_empty)
 {
 	intlist list;
 	EXPECT_TRUE(list.empty());
