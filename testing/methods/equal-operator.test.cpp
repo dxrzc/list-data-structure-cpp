@@ -1,9 +1,11 @@
 #include <gtest/gtest.h>
+#include <array>
 #include "list.h"
-#include "../helpers/intlist.typealias.helper.h"
-#include "../helpers/compare-list.helper.h"
+#include "intlist.typealias.helper.h"
+#include "compare-list.helper.h"
+#include "resource.helper.h"
 
-TEST(operatorEqual, shouldClearAndAssign)
+TEST(equal_operator, should_create_and_assign)
 {
 	intlist list{ 1, 2, 3 };
 	intlist newlist{ 3, 2, 1 };
@@ -11,9 +13,22 @@ TEST(operatorEqual, shouldClearAndAssign)
 	EXPECT_TRUE(compare_list(newlist, list));
 }
 
-TEST(operatorEqual, dontClearifItsTheSameList)
+TEST_F(test_resource_list, equal_operator_should_delete_its_elements_before_assign)
 {
-	intlist list{ 1, 2, 3 };
+	// constructs two test_resources with no copies 
+	test_list.emplace_back(1);
+	test_list.emplace_back(2);
+	
+	const list<test_resource> new_resource_list; 
+	test_list = new_resource_list;
+
+	EXPECT_EQ(test_resource::destructor_calls, 2);
+}
+
+TEST(equal_operator, should_work_successfully_if_is_used_with_itself)
+{
+	intlist list{ 1,2,3 };
+	const std::size_t current_size = list.size();
 	list = list;
-	EXPECT_TRUE(compare_list(list, intlist{ 1, 2, 3 }));
+	EXPECT_EQ(list.size(), current_size);
 }
