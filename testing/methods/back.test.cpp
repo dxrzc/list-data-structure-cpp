@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "../helpers/intlist.typealias.helper.h"
 
-TEST(front, shoudlReturnTheBack)
+TEST(back, shoudlReturnTheBack)
 {
 	const int valueExpected = 3;
 	intlist list;
