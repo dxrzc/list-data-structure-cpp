@@ -4,14 +4,11 @@
 #include<utility>
 #include<functional>
 
-template<typename List, typename It>
-struct is_valid_iterator {
-	static constexpr bool iteratorConcept =
-		std::same_as<It, typename List::iterator>
-		|| std::same_as<It, typename List::const_iterator>
-		|| std::same_as<It, typename List::reverse_iterator>
-		|| std::same_as<It, typename List::const_reverse_iterator>;
-};
+template <typename List, typename It>
+concept IteratorLike = std::same_as<It, typename List::iterator>
+|| std::same_as<It, typename List::const_iterator>
+|| std::same_as<It, typename List::reverse_iterator>
+|| std::same_as<It, typename List::const_reverse_iterator>;
 
 template<class T>
 class list
@@ -714,28 +711,28 @@ public:
 	}
 
 	template<typename It, typename ...Args>
-		requires is_valid_iterator<list, It>::iteratorConcept
+		requires IteratorLike<list, It>
 	It emplace(It it, Args&& ... args)
 	{
 		return emplaceAt<It>(it, std::forward<Args>(args)...);
 	}
 
 	template<typename It>
-		requires is_valid_iterator<list, It>::iteratorConcept
+		requires IteratorLike<list, It>
 	It pop(It it)
 	{
 		return popPosition<It>(it);
 	}
 
 	template<typename It>
-		requires is_valid_iterator<list, It>::iteratorConcept
+		requires IteratorLike<list, It>
 	It insert(It it, const T& newvalue)
 	{
 		return emplace<It>(it, newvalue);
 	}
 
 	template<typename It>
-		requires is_valid_iterator<list, It>::iteratorConcept
+		requires IteratorLike<list, It>
 	It insert(It it, T&& newvalue)
 	{
 		return emplace<It>(it, std::move(newvalue));
@@ -760,7 +757,7 @@ public:
 	}
 
 	template<typename It>
-		requires is_valid_iterator<list, It>::iteratorConcept
+		requires IteratorLike<list, It>
 	void splice(It where, list& rightlist)
 	{
 		link* lnk = where.pimpl.get()->linker;
