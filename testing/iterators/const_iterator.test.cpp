@@ -18,7 +18,7 @@ TEST(const_iterator, pre_increment_operator)
 {
     intlist list{ 1, 2, 3 };
     auto cit = list.cbegin();
-    EXPECT_EQ(*(++cit), 1);
+    EXPECT_EQ(*(cit), 1);
     EXPECT_EQ(*(++cit), 2);
     EXPECT_EQ(*(++cit), 3);
 }
