@@ -1,31 +1,31 @@
 #include <gtest/gtest.h>
-#include "../helpers/intlist.typealias.helper.h"
+#include "intlist.typealias.helper.h"
 
-TEST(front, shouldReturnTheFront)
+TEST(front, should_return_the_front)
 {
-	const int frontExpected = 1;
+	const int front_expected = 1;
 	intlist list;
-	list.push_back(frontExpected);
+	list.push_back(front_expected);
 	list.push_back(2);
 	list.push_back(3);
-	EXPECT_EQ(list.front(), frontExpected);
+	EXPECT_EQ(list.front(), front_expected);
 }
 
-TEST(front, shouldThrowLengthError)
+TEST(front, should_throw_length_error)
 {
-	intlist emptylist;
-	EXPECT_THROW(emptylist.front(), std::length_error);
+	intlist empty_list;
+	EXPECT_THROW(empty_list.front(), std::length_error);
 }
 
-TEST(front_constlist, shouldReturnTheFront)
+TEST(front_constlist, should_return_the_front)
 {
 	const int front = 10;
-	const intlist list{ front,2,3 };
+	const intlist list{ front, 2, 3 };
 	EXPECT_EQ(list.front(), front);
 }
 
-TEST(front_constlist, shouldThrowLengthError)
+TEST(front_constlist, should_throw_length_error)
 {
-	const intlist emptylist;
-	EXPECT_THROW(emptylist.front(), std::length_error);
+	const intlist empty_list;
+	EXPECT_THROW(empty_list.front(), std::length_error);
 }
