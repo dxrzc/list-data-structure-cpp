@@ -14,10 +14,12 @@ public:
 	static unsigned copy_constructor;
 	static unsigned movement_constructor;
 	static unsigned instances_created;
+	static unsigned destructor_calls;
 
 	test_resource(uint16_t testvalue_) : testvalue(testvalue_) { ++instances_created; }
 	test_resource(const test_resource& rhs) :testvalue(rhs.testvalue) { ++copy_constructor; }
 	test_resource(test_resource&& rhs) noexcept : testvalue(std::move(rhs.testvalue)) { ++movement_constructor; }
+	~test_resource() { ++destructor_calls; }
 };
 
 class test_resource_list : public ::testing::Test
@@ -29,6 +31,7 @@ protected:
 		test_resource::copy_constructor = 0;
 		test_resource::movement_constructor = 0;
 		test_resource::instances_created = 0;
+		test_resource::destructor_calls = 0;
 		test_list.clear();
 		assert(test_list.size() == 0);
 	}
