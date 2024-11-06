@@ -16,6 +16,14 @@ TEST_F(test_resource_list, emplace_by_iterator_should_not_copy)
 	EXPECT_EQ(test_resource::instances_created, 1);
 }
 
+TEST(emplace_by_iterator, should_return_iterator_to_new_value)
+{
+	intlist list{ 1,2,3 };
+	const int new_value = 101;
+	auto new_value_it = list.emplace(list.begin(), new_value);
+	EXPECT_EQ(*new_value_it, new_value);
+}
+
 TEST(emplace_by_iterator, should_update_nelms)
 {
 	intlist list{ 1,2,3 };
