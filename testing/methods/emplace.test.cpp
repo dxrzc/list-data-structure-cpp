@@ -19,6 +19,7 @@ TEST_F(test_resource_list, emplace_by_iterator_should_not_copy)
 TEST(emplace_by_iterator, should_update_nelms)
 {
 	intlist list{ 1,2,3 };
+	const std::size_t current_size = list.size();
 	list.emplace(list.end(), 10);
-	EXPECT_EQ(list.size(), 4);
+	EXPECT_EQ(list.size(), current_size + 1);
 }
