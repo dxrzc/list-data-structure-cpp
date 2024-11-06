@@ -7,7 +7,7 @@
 TEST(remove_if, shouldRemoveSucefully)
 {
 	intlist list{ 1,2,3,4,5 };
-	list.remove_if(isEven);
+	list.remove_if(is_even);
 	auto it = list.cbegin();
 	EXPECT_EQ(*it, 1);
 	++it;
@@ -19,20 +19,20 @@ TEST(remove_if, shouldRemoveSucefully)
 TEST(remove_if, noProblemIfListEmpty)
 {
 	intlist emptylist;
-	auto removed = emptylist.remove_if(isEven);
+	auto removed = emptylist.remove_if(is_even);
 	EXPECT_EQ(removed, 0);
 }
 
 TEST(remove_if, returnTheNumberOfElementsRemoved)
 {
 	intlist list{ 2,4,9,6,8,1 };
-	auto removed = list.remove_if(isEven);
+	auto removed = list.remove_if(is_even);
 	EXPECT_EQ(removed, 4);
 }
 
 TEST(remove_if, shouldUpdateListSize)
 {
 	intlist list{ 1,2,3,4,5 };
-	auto removed = list.remove_if(isEven);
+	auto removed = list.remove_if(is_even);
 	EXPECT_EQ(list.size(), 3);
 }
