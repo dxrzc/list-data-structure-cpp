@@ -1,35 +1,35 @@
 #pragma once
 
-#include "list.h"
 #include <gtest/gtest.h>
 #include <cassert>
+#include "list.h"
 
-class testResource
+class test_resource
 {
 private:
 	uint16_t testvalue;
 
 public:
-	testResource() :testvalue(0) { ++instancesCreated; }
-	static unsigned copyConstructor;
-	static unsigned movementConstructor;
-	static unsigned instancesCreated;
+	test_resource() :testvalue(0) { ++instances_created; }
+	static unsigned copy_constructor;
+	static unsigned movement_constructor;
+	static unsigned instances_created;
 
-	testResource(uint16_t testvalue_) : testvalue(testvalue_) { ++instancesCreated; }
-	testResource(const testResource& res) :testvalue(res.testvalue) { ++copyConstructor; }
-	testResource(testResource&& res) noexcept : testvalue(std::move(res.testvalue)) { ++movementConstructor; }
+	test_resource(uint16_t testvalue_) : testvalue(testvalue_) { ++instances_created; }
+	test_resource(const test_resource& rhs) :testvalue(rhs.testvalue) { ++copy_constructor; }
+	test_resource(test_resource&& rhs) noexcept : testvalue(std::move(rhs.testvalue)) { ++movement_constructor; }
 };
 
-class testResourceList : public ::testing::Test
+class test_resource_list : public ::testing::Test
 {
 protected:
-	list<testResource> listForTesting;
+	list<test_resource> test_list;
 	void SetUp() override
 	{
-		testResource::copyConstructor = 0;
-		testResource::movementConstructor = 0;
-		testResource::instancesCreated = 0;
-		listForTesting.clear();
-		assert(listForTesting.size() == 0);
+		test_resource::copy_constructor = 0;
+		test_resource::movement_constructor = 0;
+		test_resource::instances_created = 0;
+		test_list.clear();
+		assert(test_list.size() == 0);
 	}
 };

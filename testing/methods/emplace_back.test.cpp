@@ -10,14 +10,14 @@ TEST(emplace_back, shouldInsertInTheBack)
 	EXPECT_EQ(testlist.back(), newvalue);
 }
 
-TEST_F(testResourceList, dontCopyUsingEmplaceBack)
+TEST_F(test_resource_list, dontCopyUsingEmplaceBack)
 {
-	listForTesting.emplace_back(100);
-	EXPECT_EQ(testResource::instancesCreated, 1);
+	test_list.emplace_back(100);
+	EXPECT_EQ(test_resource::instances_created, 1);
 }
 
-TEST_F(testResourceList, updateNelmsUsingEmplaceBack)
+TEST_F(test_resource_list, updateNelmsUsingEmplaceBack)
 {
-	listForTesting.emplace_back(100);
-	EXPECT_EQ(listForTesting.size(), 1);
+	test_list.emplace_back(100);
+	EXPECT_EQ(test_list.size(), 1);
 }

@@ -10,17 +10,17 @@ TEST(push_backByMovement, shouldInsertInTheBack)
 	EXPECT_EQ(testlist.back(), newvalue);
 }
 
-TEST_F(testResourceList, pushBackDontCopyUsingStdMove)
+TEST_F(test_resource_list, pushBackDontCopyUsingStdMove)
 {
-	testResource resource;
-	listForTesting.push_back(std::move(resource));
-	EXPECT_EQ(testResource::instancesCreated, 1);
-	EXPECT_EQ(testResource::movementConstructor, 1);
+	test_resource resource;
+	test_list.push_back(std::move(resource));
+	EXPECT_EQ(test_resource::instances_created, 1);
+	EXPECT_EQ(test_resource::movement_constructor, 1);
 }
 
-TEST_F(testResourceList, updateNelmsUsingPushBackbyMovement)
+TEST_F(test_resource_list, updateNelmsUsingPushBackbyMovement)
 {
-	testResource resource;
-	listForTesting.push_back(std::move(resource));
-	EXPECT_EQ(listForTesting.size(), 1);
+	test_resource resource;
+	test_list.push_back(std::move(resource));
+	EXPECT_EQ(test_list.size(), 1);
 }

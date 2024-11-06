@@ -1,19 +1,19 @@
 #include <gtest/gtest.h>
-#include "../helpers/intlist.typealias.helper.h"
-#include "../helpers/resource.helper.h"
+#include "intlist.typealias.helper.h"
+#include "resource.helper.h"
 
-TEST(emplaceUsingIterator, shouldInsertBeforeTheIteratorGiven)
+TEST(emplace_by_iterator, should_insert_successfully)
 {
-	const int newvalue = 100;
+	const int new_value = 100;
 	intlist list{ 1,2,3 };
-	list.emplace(list.begin(), newvalue);
-	EXPECT_EQ(list.front(), newvalue);
+	list.emplace(list.begin(), new_value);
+	EXPECT_EQ(list.front(), new_value);
 }
 
-TEST_F(testResourceList, emplaceUsingIteratorShouldNotCopy)
+TEST_F(test_resource_list, should_not_copy)
 {
-	listForTesting.emplace(listForTesting.end(), testResource());
-	EXPECT_EQ(testResource::instancesCreated, 1);
+	test_list.emplace(test_list.end(), test_resource());
+	EXPECT_EQ(test_resource::instances_created, 1);
 }
 
 TEST(emplaceUsingIterator, shouldUpdateNelms)

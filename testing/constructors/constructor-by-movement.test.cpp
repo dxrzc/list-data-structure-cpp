@@ -10,13 +10,13 @@ TEST(constructorByMovement, shouldUpdateNelms)
 	EXPECT_EQ(list2.size(), 3);
 }
 
-TEST_F(testResourceList, constructorByMovementshouldNotMakeCopies)
+TEST_F(test_resource_list, constructorByMovementshouldNotMakeCopies)
 {
-	listForTesting.emplace_back(testResource());
-	listForTesting.emplace_back(testResource());
-	listForTesting.emplace_back(testResource());
+	test_list.emplace_back(test_resource());
+	test_list.emplace_back(test_resource());
+	test_list.emplace_back(test_resource());
 
-	list<testResource> resourceList = std::move(listForTesting);
+	list<test_resource> resource_list = std::move(test_list);
 
-	EXPECT_EQ(testResource::copyConstructor, 0);
+	EXPECT_EQ(test_resource::copy_constructor, 0);
 }

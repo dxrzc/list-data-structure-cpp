@@ -10,14 +10,14 @@ TEST(emplace_front, shouldInsertInTheFront)
 	EXPECT_EQ(testlist.front(), newvalue);
 }
 
-TEST_F(testResourceList, dontCopyUsingEmplaceFront)
+TEST_F(test_resource_list, dontCopyUsingEmplaceFront)
 {
-	listForTesting.emplace_front(100);
-	EXPECT_EQ(testResource::instancesCreated, 1);
+	test_list.emplace_front(100);
+	EXPECT_EQ(test_resource::instances_created, 1);
 }
 
-TEST_F(testResourceList, updateNelmsUsingEmplaceFront)
+TEST_F(test_resource_list, updateNelmsUsingEmplaceFront)
 {
-	listForTesting.emplace_front(100);
-	EXPECT_EQ(listForTesting.size(), 1);
+	test_list.emplace_front(100);
+	EXPECT_EQ(test_list.size(), 1);
 }

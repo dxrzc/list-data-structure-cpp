@@ -10,10 +10,10 @@ TEST(insertUsingIteratorByMovement, shouldInsertBeforeTheIteratorGiven)
 	EXPECT_EQ(list.front(), newvalue);
 }
 
-TEST_F(testResourceList, insertByMovementUsingIteratorShouldNotCopy)
+TEST_F(test_resource_list, insertByMovementUsingIteratorShouldNotCopy)
 {
-	listForTesting.insert(listForTesting.end(), testResource());
-	EXPECT_EQ(testResource::instancesCreated, 1);
+	test_list.insert(test_list.end(), test_resource());
+	EXPECT_EQ(test_resource::instances_created, 1);
 }
 
 TEST(insertUsingIteratorByMovement, shouldUpdateNelms)

@@ -1,5 +1,5 @@
 #include "resource.helper.h"
 
-unsigned testResource::copyConstructor = 0;
-unsigned testResource::movementConstructor = 0;
-unsigned testResource::instancesCreated = 0;
+unsigned test_resource::copy_constructor = 0;
+unsigned test_resource::movement_constructor = 0;
+unsigned test_resource::instances_created = 0;
