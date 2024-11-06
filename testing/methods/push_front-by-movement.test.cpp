@@ -1,26 +1,27 @@
 #include <gtest/gtest.h>
-#include "../helpers/intlist.typealias.helper.h"
-#include "../helpers/resource.helper.h"
+#include "intlist.typealias.helper.h"
+#include "resource.helper.h"
 
-TEST_F(test_resource_list, updateNelmsUsingPushFrontbyMovement)
+TEST(push_front_by_mov, should_push_front)
 {
-	test_resource resource;
-	test_list.push_front(std::move(resource));
-	EXPECT_EQ(test_list.size(), 1);
-	EXPECT_EQ(test_resource::movement_constructor, 1);
+	int newvalue = 4;
+	intlist testlist{ 1,2,3 };
+	testlist.push_front(std::move(newvalue));
+	EXPECT_EQ(testlist.front(), newvalue);
 }
 
-TEST_F(test_resource_list, pushFrontDontCopyUsingStdMove)
+TEST_F(test_resource_list, push_front_by_mov_should_not_copy_but_move)
 {
 	test_resource resource;
 	test_list.push_front(std::move(resource));
 	EXPECT_EQ(test_resource::instances_created, 1);
+	EXPECT_EQ(test_resource::movement_constructor, 1);
 }
 
-TEST_F(test_resource_list, updateNelmsUsingPushFrontByMovement)
+TEST(push_front_by_mov, should_update_nelms)
 {
 	intlist list{ 1,2,3 };
-	const auto currentsize = list.size();
-	list.push_front(std::move(1));
-	EXPECT_EQ(list.size(), currentsize + 1);
+	const std::size_t current_size = list.size();
+	list.push_front(std::move(4));
+	EXPECT_EQ(list.size(), current_size + 1);
 }
