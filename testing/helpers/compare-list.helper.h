@@ -3,4 +3,4 @@
 #include "intlist.typealias.helper.h"
 #include <gtest/gtest.h>
 
-testing::AssertionResult compareList(const intlist&, const intlist&);
+testing::AssertionResult compare_list(const intlist&, const intlist&);

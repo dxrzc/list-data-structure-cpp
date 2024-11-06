@@ -11,7 +11,7 @@ TEST(splice, shouldSpliceSuccefully)
 
 	list.splice(begin, splicedlist);
 
-	EXPECT_TRUE(compareList(list, intlist{ 1,9,8,7,2,3 }));
+	EXPECT_TRUE(compare_list(list, intlist{ 1,9,8,7,2,3 }));
 }
 
 TEST(splice, shouldUpdateNelms)
@@ -45,7 +45,7 @@ TEST(splice, ifRightIsEmpty)
 
 	list.splice(list.begin(), empty);
 
-	EXPECT_TRUE(compareList(list, intlist{ 1,2,3 }));
+	EXPECT_TRUE(compare_list(list, intlist{ 1,2,3 }));
 	EXPECT_TRUE(empty.empty());
 }
 
@@ -56,7 +56,7 @@ TEST(splice, ifCurrentListIsEmpty)
 
 	list.splice(list.end(), newlist);
 
-	EXPECT_TRUE(compareList(list, intlist{ 1,2,3 }));
+	EXPECT_TRUE(compare_list(list, intlist{ 1,2,3 }));
 	EXPECT_TRUE(newlist.empty());
 }
 

@@ -8,7 +8,7 @@ TEST(for_each, shouldforEachSuccefully)
 	intlist list{ 1,2,3 };
 	for (int& i : list)
 		i = 0;
-	EXPECT_TRUE(compareList(list, intlist({ 0,0,0 })));
+	EXPECT_TRUE(compare_list(list, intlist({ 0,0,0 })));
 }
 
 TEST(for_each, shouldForEachOnConstList)
@@ -17,5 +17,5 @@ TEST(for_each, shouldForEachOnConstList)
 	intlist aux;
 	for (int i : list)
 		aux.push_back(i);
-	EXPECT_TRUE(compareList(aux, list));
+	EXPECT_TRUE(compare_list(aux, list));
 }

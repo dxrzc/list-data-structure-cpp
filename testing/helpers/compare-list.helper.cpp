@@ -1,6 +1,6 @@
 #include "compare-list.helper.h"
 
-testing::AssertionResult compareList(const intlist& list, const intlist& list2)
+testing::AssertionResult compare_list(const intlist& list, const intlist& list2)
 {
 	if (list == list2)
 		return testing::AssertionSuccess();
