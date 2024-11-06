@@ -1,17 +1,18 @@
 #include <gtest/gtest.h>
 #include "list.h"
-#include "../helpers/intlist.typealias.helper.h"
-#include "../helpers/compare-list.helper.h"
+#include "intlist.typealias.helper.h"
+#include "compare-list.helper.h"
 
-TEST(for_each, shouldforEachSuccefully)
+TEST(for_each, should_work_successfully)
 {
+	const int new_value = 0;
 	intlist list{ 1,2,3 };
 	for (int& i : list)
-		i = 0;
-	EXPECT_TRUE(compare_list(list, intlist({ 0,0,0 })));
+		i = new_value;
+	EXPECT_TRUE(compare_list(list, intlist({ new_value,new_value,new_value })));
 }
 
-TEST(for_each, shouldForEachOnConstList)
+TEST(for_each, should_work_successfully_on_const_list)
 {
 	const intlist list{ 1,2,3 };
 	intlist aux;
