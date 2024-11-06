@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include "../helpers/intlist.typealias.helper.h"
+#include "intlist.typealias.helper.h"
 
-TEST(size, shouldReturnTheCorrectSize)
+TEST(size, should_retunr_the_size_successfully_when_list_not_empty)
 {
 	intlist list;
 	list.push_back(1);
@@ -10,8 +10,8 @@ TEST(size, shouldReturnTheCorrectSize)
 	EXPECT_EQ(list.size(), 3);
 }
 
-TEST(size, sizeShouldBe0ifListEmpty)
+TEST(size, should_return_0_if_list_empty)
 {
-	intlist list;
-	EXPECT_EQ(list.size(), 0);
+	intlist empty_list;
+	EXPECT_EQ(empty_list.size(), 0);
 }
