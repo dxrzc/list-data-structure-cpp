@@ -1,30 +1,26 @@
 #include <gtest/gtest.h>
-#include "../helpers/intlist.typealias.helper.h"
+#include "intlist.typealias.helper.h"
 
-TEST(insertUsingIterator, shouldInsertBeforeTheIteratorGiven)
+TEST(insert_by_iterator, should_insert_succesfully)
 {
-	intlist list{ 1, 2, 3 };
-	auto it = list.begin();
-
-	const int newNumber = 100;
-	list.insert(it, newNumber);
-
-	EXPECT_EQ(*(list.begin()), newNumber);
+	intlist list{ 1,2,3 };
+	const int new_value = 0;
+	list.insert(list.begin(), new_value);
+	EXPECT_EQ(list.front(), new_value);
 }
 
-TEST(insertUsingIterator, shouldReturnIteratorToNewValue)
+TEST(insert_by_iterator, should_return_iterator_to_new_value)
 {
-	intlist list{ 1, 2, 3 };
-	auto it = list.begin();
-	auto newIt = list.insert(it, 100);
-	EXPECT_EQ(*(newIt), 100);
+	intlist list{ 1,2,3 };
+	const int new_value = 101;
+	auto new_value_it = list.insert(list.begin(), new_value);
+	EXPECT_EQ(*new_value_it, new_value);
 }
 
-TEST(insertUsingIterator, shouldIncrementNelms)
+TEST(insert_by_iterator, should_update_nelms)
 {
-	intlist list;
-	list.insert(list.end(), 1);
-	list.insert(list.end(), 1);
-	list.insert(list.end(), 1);
-	EXPECT_EQ(list.size(), 3);
+	intlist list{ 1,2,3 };
+	const std::size_t current_size = list.size();
+	list.insert(list.begin(), 1);
+	EXPECT_EQ(list.size(), current_size + 1);
 }
