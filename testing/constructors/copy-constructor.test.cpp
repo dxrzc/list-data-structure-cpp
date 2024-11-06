@@ -1,20 +1,17 @@
 #include <gtest/gtest.h>
-#include "../helpers/intlist.typealias.helper.h"
+#include "intlist.typealias.helper.h"
+#include "compare-list.helper.h"
 
-TEST(copyConstructor, shouldCopySuccefully)
+TEST(copy_constructor, should_copy_successfully)
 {
-	intlist list{ 1, 2, 3 };
-	intlist list2 = list;
-	ASSERT_EQ(list.front(), 1);
-	list.pop_front();
-	ASSERT_EQ(list.front(), 2);
-	list.pop_front();
-	ASSERT_EQ(list.front(), 3);
+	intlist list{ 1,2,3 };
+	auto new_list(list);
+	EXPECT_TRUE(compare_list(list, new_list));
 }
 
-TEST(copyConstructor, shouldsetNelms)
+TEST(copy_constructor, should_update_nelms)
 {
-	intlist list{ 1, 2, 3, 4, 5 };
+	intlist list{ 1, 2, 3, 4, 5 };	
 	intlist list2 = list;
 	EXPECT_EQ(list.size(), list2.size());
 }
