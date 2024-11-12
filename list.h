@@ -137,12 +137,16 @@ private:
 	template<typename It, typename ...Args>
 	link* emplaceAt(It it, Args&& ...args)
 	{
-		link** itlinker = &(it.pimpl.get()->linker);
-		link* newnode = new node((*itlinker)->previous, (*itlinker), std::forward<Args>(args)...);
-		(*itlinker)->previous->next = newnode;
-		(*itlinker)->previous = newnode;
+		link* it_linker = it.pimpl.get()->linker;
+		link* it_previous_linker = it_linker->previous;
+
+		link* new_node = new node(it_previous_linker, it_linker, std::forward<Args>(args)...);
+		it_previous_linker->next = new_node;
+		it_linker->next = new_node;
+
 		++nelms;
-		return newnode;
+
+		return new_node;
 	}
 
 	void swapElements(link* first, link* second)
