@@ -157,50 +157,48 @@ private:
 		if (first == &head || second == &head)
 			throw std::invalid_argument("You cant swap head");
 
-		link* beforeFirst = first->previous;
-		link* afterFirst = first->next;
+		link* first_previous_linker = first->previous;
+		link* first_next_linker = first->next;
 
-		link* beforeSecond = second->previous;
-		link* afterSecond = second->next;
+		link* second_previous_linker = second->previous;
+		link* second_next_linker = second->next;
+
+		// assuming "--[a]--[b]--"
+		auto swap_contiguos_cells = [](link* a, link* b) -> void
+		{
+			link* prev_a = a->previous;
+			link* next_b = b->next;
+
+			prev_a->next = b;
+			next_b->previous = a;
+
+			b->next = a;
+			b->previous = prev_a;
+			a->previous = b;
+			a->next = next_b;
+		};
 
 		if (first->next == second)
 		{
-			beforeFirst->next = second;
-			second->previous = beforeFirst;
-
-			second->next = first;
-			first->previous = second;
-
-			first->next = afterSecond;
-			afterSecond->previous = first;
-
-			return;
+			swap_contiguos_cells(first, second);
 		}
-
-		if (second->next == first)
+		else if (second->next == first)
 		{
-			beforeSecond->next = first;
-			first->previous = beforeSecond;
-
-			first->next = second;
-			second->previous = first;
-
-			afterFirst->previous = second;
-			second->next = afterFirst;
-
-			return;
+			swap_contiguos_cells(second, first);
 		}
+		else
+		{
+			first_previous_linker->next = second;
+			first_next_linker->previous = second;
+			second->next = first_next_linker;
+			second->previous = first_previous_linker;
 
-		beforeFirst->next = second;
-		afterFirst->previous = second;
-		second->next = afterFirst;
-		second->previous = beforeFirst;
+			second_previous_linker->next = first;
+			second_next_linker->previous = first;
 
-		beforeSecond->next = first;
-		afterSecond->previous = first;
-
-		first->next = afterSecond;
-		first->previous = beforeSecond;
+			first->next = second_next_linker;
+			first->previous = second_previous_linker;
+		}						
 	}
 
 public:
