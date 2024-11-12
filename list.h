@@ -10,10 +10,12 @@ concept IteratorLike = std::same_as<It, typename List::iterator>
 || std::same_as<It, typename List::reverse_iterator>
 || std::same_as<It, typename List::const_reverse_iterator>;
 
+// doubly linked list with header
 template<class T>
 class list
 {
 private:
+	// allows to create a cell with a type that does not have a default constructor
 	struct link
 	{
 		link* previous;
@@ -69,6 +71,7 @@ private:
 		}
 	}
 
+	// pimpl technique
 	class iteratorImpl
 	{
 	private:
@@ -106,23 +109,31 @@ private:
 		bool operator==(const iteratorImpl& itImpl) const noexcept { return linker == itImpl.linker; }
 	};
 
+	// internal function to pop an element using an iterator
 	template<class It>
 	link* popPosition(It it)
 	{
 		if (empty())
 			throw std::length_error("pop called on empty list");
+
 		node* target = dynamic_cast<node*>(it.pimpl.get()->linker);
 		if (!target)
 			throw std::runtime_error("pop called on head");
-		link** itlinker = &(it.pimpl.get()->linker);
-		link* next = (*itlinker)->next;
-		(*itlinker)->previous->next = next;
-		next->previous = (*itlinker)->previous;
+
+		link* it_linker = it.pimpl.get()->linker;
+		link* it_previous_linker = it_linker->previous;
+		link* it_next_linker = it_linker->next;
+
+		it_previous_linker->next = it_next_linker;
+		it_next_linker->previous = it_previous_linker;
+
 		delete target;
 		--nelms;
-		return next;
+
+		return it_next_linker;
 	}
 
+	// internal function to create an element using an iterator
 	template<typename It, typename ...Args>
 	link* emplaceAt(It it, Args&& ...args)
 	{
