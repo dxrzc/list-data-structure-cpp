@@ -915,5 +915,23 @@ public:
 		return end();
 	}
 
-	
+	/*
+	* @brief Checks if the list contains an element with the specified value.
+	* @param value The value to search for within the list.
+	* @return bool `true` if the value is found in the list; `false` otherwise.
+	*/
+	bool contains(const T& value)
+	{
+		link* current_cell = head.next;
+
+		while (current_cell!=&head)
+		{
+			if (static_cast<node*>(current_cell)->value == value)
+				return true;
+			else
+				current_cell = current_cell->next;
+		}
+
+		return false;
+	}
 };
