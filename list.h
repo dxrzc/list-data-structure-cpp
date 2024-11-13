@@ -748,11 +748,11 @@ public:
 	}
 
 	/*
-	* @brief Constructs and inserts a new element at the specified position.	
+	* @brief Constructs and inserts a new element at the specified position.
 	* @param it The iterator position where the new element will be created and inserted.
 	* @param args The arguments to forward to the constructor of the new element.
 	* @return An iterator pointing to the newly constructed element.
-	*/	
+	*/
 	template<typename It, typename ...Args>
 		requires IteratorLike<list, It>
 	It emplace(It it, Args&& ... args)
@@ -761,7 +761,7 @@ public:
 	}
 
 	/*
-	* @brief Removes the element at the specified position.		
+	* @brief Removes the element at the specified position.
 	* @param it The iterator pointing to the element to be removed.
 	* @return An iterator pointing to the element following the removed element.
 	*/
@@ -892,5 +892,20 @@ public:
 		};
 
 		quickSort(0, std::size_t(nelms - 1));
+	}
+
+	iterator find(const T& value)
+	{
+		link* current_cell = head.next;
+
+		while (current_cell != &head)
+		{
+			if (static_cast<node*>(current_cell)->value == value)
+				return iterator(current_cell);
+			else
+				current_cell = current_cell->next;
+		}
+
+		return end();
 	}
 };
