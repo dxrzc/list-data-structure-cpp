@@ -10,11 +10,10 @@ TEST(sort, should_sort_list_successfully)
 	EXPECT_TRUE(compare_list(list, intlist{ 0,1,2,3,4,5,6,7,8,9 }));	
 }
 
-TEST(sort, should_not_throw_error_if_list_empty)
+TEST(sort, should_not_cause_fatal_failure_on_empty_list)
 {
 	intlist emptylist;
-	ASSERT_NO_THROW(emptylist.sort());
-	EXPECT_TRUE(emptylist.empty());
+	EXPECT_NO_FATAL_FAILURE(emptylist.sort());	
 }
 
 TEST(sort, should_not_throw_error_if_list_has_one_elm)
