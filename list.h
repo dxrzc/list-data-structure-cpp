@@ -101,9 +101,10 @@ private:
 
 		T& getValue()
 		{
-			if (dynamic_cast<node*>(linker) == nullptr)
-				throw std::runtime_error("Invalid ptr to use '*' ");
-			return static_cast<node*>(linker)->value;
+			node* node_ptr = dynamic_cast<node*>(linker);
+			if (!node_ptr)
+				throw std::runtime_error("Invalid pointer: Cannot dereference non-node object.");
+			return node_ptr->value;
 		}
 
 		bool operator==(const iteratorImpl& itImpl) const noexcept { return linker == itImpl.linker; }
