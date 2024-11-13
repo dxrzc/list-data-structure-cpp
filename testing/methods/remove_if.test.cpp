@@ -26,8 +26,8 @@ TEST(remove_if, should_return_0_if_no_element_match_condition)
 	EXPECT_EQ(removed, 0);
 }
 
-TEST(remove_if, should_not_throw_if_list_empty)
+TEST(remove_if, should_not_cause_fatal_failure_on_empty_list)
 {
 	intlist emptylist;
-	ASSERT_NO_THROW(emptylist.remove_if(is_even));
+	EXPECT_NO_FATAL_FAILURE(emptylist.remove_if(is_even));
 }
