@@ -202,6 +202,21 @@ private:
 		}
 	}
 
+	link* findValue(const T& value)
+	{
+		link* current_cell = head.next;
+
+		while (current_cell != &head)
+		{
+			if (static_cast<node*>(current_cell)->value == value)
+				return current_cell;
+			else
+				current_cell = current_cell->next;
+		}
+
+		return nullptr;
+	}
+
 public:
 
 	class iterator;
@@ -902,17 +917,20 @@ public:
 	*/
 	iterator find(const T& value)
 	{
-		link* current_cell = head.next;
+		link* cell = findValue(value);
+		if (cell)
+			return cell;
+		else
+			return end();
+	}
 
-		while (current_cell != &head)
-		{
-			if (static_cast<node*>(current_cell)->value == value)
-				return iterator(current_cell);
-			else
-				current_cell = current_cell->next;
-		}
-
-		return end();
+	const_iterator find(const T& value) const
+	{
+		link* cell = findValue(value);
+		if (cell)
+			return cell;
+		else
+			return cend();
 	}
 
 	/*
