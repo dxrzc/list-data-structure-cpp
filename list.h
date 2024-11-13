@@ -65,7 +65,7 @@ private:
 		{
 			node* next = dynamic_cast<node*>(aux);
 			if (!next)
-				throw std::runtime_error("unable to casting to node");
+				throw std::logic_error("unable to casting to node");
 			push_back(next->value);
 			aux = aux->next;
 		}
