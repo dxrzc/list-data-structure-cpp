@@ -894,6 +894,12 @@ public:
 		quickSort(0, std::size_t(nelms - 1));
 	}
 
+	/**
+	* @brief Finds the first occurrence of an element with the specified value in the list.	
+	* @param value The value to search for within the list.
+	* @return iterator An iterator to the first node containing the specified value,
+	* or an iterator to the end of the list if the value is not found.
+	*/
 	iterator find(const T& value)
 	{
 		link* current_cell = head.next;
@@ -908,4 +914,6 @@ public:
 
 		return end();
 	}
+
+	
 };
