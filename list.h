@@ -198,7 +198,7 @@ private:
 
 			first->next = second_next_linker;
 			first->previous = second_previous_linker;
-		}						
+		}
 	}
 
 public:
@@ -280,6 +280,10 @@ public:
 		list.nelms = 0;
 	}
 
+	/*
+	* @brief Constructs the type and inserts it at the end of the list.
+	* @param args The arguments to forward to the constructor of the new element.
+	*/
 	template <typename... Args>
 	void emplace_back(Args &&...args)
 	{
@@ -289,9 +293,12 @@ public:
 		++nelms;
 	}
 
-	void push_back(const T& newvalue)
+	/*
+	* @brief Inserts a new element at the end of the list
+	*/
+	void push_back(const T& new_value)
 	{
-		emplace_back(newvalue);
+		emplace_back(new_value);
 	}
 
 	void push_back(T&& newvalue)
@@ -299,6 +306,10 @@ public:
 		emplace_back(std::move(newvalue));
 	}
 
+	/*
+	* @brief Constructs the type and inserts it at the front of the list.
+	* @param args The arguments to forward to the constructor of the new element.
+	*/
 	template<typename... Args>
 	void emplace_front(Args&& ...args)
 	{
@@ -308,9 +319,12 @@ public:
 		++nelms;
 	}
 
-	void push_front(const T& newvalue)
+	/*
+	* @brief Inserts a new element at the front of the list.
+	*/
+	void push_front(const T& new_value)
 	{
-		emplace_front(newvalue);
+		emplace_front(new_value);
 	}
 
 	void push_front(T&& newvalue)
@@ -318,6 +332,9 @@ public:
 		emplace_front(std::move(newvalue));
 	}
 
+	/*
+	* @brief Deletes the last element.
+	*/
 	void pop_back()
 	{
 		if (empty())
@@ -329,6 +346,9 @@ public:
 		--nelms;
 	}
 
+	/*
+	* @brief Deletes the first element.
+	*/
 	void pop_front()
 	{
 		if (empty())
@@ -378,6 +398,9 @@ public:
 		return static_cast<node*>(head.previous)->value;
 	}
 
+	/*
+	* @brief Deletes every element in the list.
+	*/
 	void clear()
 	{
 		link* aux = head.next;
@@ -723,6 +746,12 @@ public:
 		return &head;
 	}
 
+	/*
+	* @brief Constructs and inserts a new element at the specified position.	
+	* @param it The iterator position where the new element will be created and inserted.
+	* @param args The arguments to forward to the constructor of the new element.
+	* @return An iterator pointing to the newly constructed element.
+	*/	
 	template<typename It, typename ...Args>
 		requires IteratorLike<list, It>
 	It emplace(It it, Args&& ... args)
@@ -730,6 +759,11 @@ public:
 		return emplaceAt<It>(it, std::forward<Args>(args)...);
 	}
 
+	/*
+	* @brief Removes the element at the specified position.		
+	* @param it The iterator pointing to the element to be removed.
+	* @return An iterator pointing to the element following the removed element.
+	*/
 	template<typename It>
 		requires IteratorLike<list, It>
 	It pop(It it)
@@ -737,6 +771,12 @@ public:
 		return popPosition<It>(it);
 	}
 
+	/*
+	* @brief Inserts a new element at the specified position in the list.
+	* @param it The iterator position where the new element will be inserted
+	* @param new_value The value to insert into the list.
+	* @return An iterator pointing to the newly inserted element.
+	*/
 	template<typename It>
 		requires IteratorLike<list, It>
 	It insert(It it, const T& newvalue)
@@ -746,11 +786,16 @@ public:
 
 	template<typename It>
 		requires IteratorLike<list, It>
-	It insert(It it, T&& newvalue)
+	It insert(It it, T&& new_value)
 	{
-		return emplace<It>(it, std::move(newvalue));
+		return emplace<It>(it, std::move(new_value));
 	}
 
+	/*
+	* @brief Removes elements from the list that satisfy a specified condition.
+	* @param condition The condition used to determine which elements to remove.
+	* @returns The number of elements removed.
+	*/
 	template<class Condition>
 	std::size_t remove_if(Condition condition)
 	{
@@ -769,6 +814,11 @@ public:
 		return totalRemoved;
 	}
 
+	/*
+	* @brief Splices another list into this list at a specified position.
+	* @param where where The position iterator in this list where the elements of `rightlist` will be inserted.
+	* @param rightlist The list to be spliced into this list. It will be empty after this operation.
+	*/
 	template<typename It>
 		requires IteratorLike<list, It>
 	void splice(It where, list& rightlist)
