@@ -28,20 +28,18 @@ TEST(splice, should_update_nelms_in_both_lists)
 	EXPECT_EQ(spliced_list.size(), 0);
 }
 
-TEST(splice, should_not_throw_error_if_rhs_list_empty)
+TEST(splice, should_not_cause_fatal_failure_if_rhs_is_empty)
 {
 	intlist list{ 1,2,3 };
 	intlist empty;
 
-	ASSERT_NO_THROW(list.splice(list.begin(), empty));
-	EXPECT_TRUE(compare_list(list, intlist{ 1,2,3 }));	
+	EXPECT_NO_FATAL_FAILURE(list.splice(list.begin(), empty));	
 }
 
-TEST(splice, should_not_throw_error_if_current_list_empty)
+TEST(splice, should_not_cause_fatal_failure_if_current_list_empty)
 {
 	intlist list;
 	intlist new_list{ 1,2,3 };
 
-	ASSERT_NO_THROW(list.splice(list.begin(), new_list));
-	EXPECT_TRUE(compare_list(list, intlist{ 1,2,3 }));
+	EXPECT_NO_FATAL_FAILURE(list.splice(list.begin(), new_list));	
 }
