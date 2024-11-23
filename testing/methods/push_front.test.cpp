@@ -18,7 +18,7 @@ TEST(push_front, should_update_nelms)
 	intlist list{ 1,2,3 };
 	const std::size_t current_size = list.size();
 
-	list.push_front(std::move(4));
+	list.push_front(4);
 
 	EXPECT_EQ(list.size(), current_size + 1);
 }
