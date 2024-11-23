@@ -143,7 +143,7 @@ private:
 
 		link* new_node = new node(it_previous_linker, it_linker, std::forward<Args>(args)...);
 		it_previous_linker->next = new_node;
-		it_linker->next = new_node;
+		it_linker->previous = new_node;
 
 		++nelms;
 
