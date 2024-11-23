@@ -8,9 +8,9 @@ TEST(emplace_by_iterator, should_insert_succesfully_at_begin)
 	const int new_value = 0;
 	intlist expected_list{ new_value, 1,2,3 };
 
-	intlist list{ 1,2,3 };
-	list.emplace(list.begin(), new_value);
+	intlist list{ 1,2,3 };	
 
+	ASSERT_NO_FATAL_FAILURE(list.emplace(list.begin(), new_value));
 	EXPECT_TRUE(compare_list(list, expected_list));
 }
 
@@ -20,8 +20,8 @@ TEST(emplace_by_iterator, should_insert_sucesfully_at_end)
 	intlist expected_list{ 1,2,3,4 };
 
 	intlist list{ 1,2,3 };
-	list.emplace(list.end(), new_value);
 
+	ASSERT_NO_FATAL_FAILURE(list.emplace(list.end(), new_value));
 	EXPECT_TRUE(compare_list(list, expected_list));
 }
 
@@ -33,8 +33,8 @@ TEST(emplace_by_iterator, should_insert_sucesfully_at_random_pos)
 	intlist list{ 1,2,4,5 };
 	intlist::iterator it = list.begin();
 	std::advance(it, 2);
-	list.emplace(it, new_value);
 
+	ASSERT_NO_FATAL_FAILURE(list.emplace(it, new_value));
 	EXPECT_TRUE(compare_list(list, expected_list));
 }
 
