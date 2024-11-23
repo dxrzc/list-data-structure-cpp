@@ -1,12 +1,15 @@
 #include <gtest/gtest.h>
 #include "intlist.typealias.helper.h"
+#include "compare-list.helper.h"
 
-TEST(pop_back, should_pop_back)
+TEST(pop_back, should_pop_last_element)
 {
-	const int aux = 2;
-	intlist list{ aux, 3 };
-	list.pop_back();
-	EXPECT_EQ(list.back(), aux);
+	intlist expected_list{ 1,2,3 };
+
+	intlist list{ 1,2,3,4 };	
+
+	ASSERT_NO_FATAL_FAILURE(list.pop_back());
+	EXPECT_TRUE(compare_list(list, expected_list));
 }
 
 TEST(pop_back, should_throw_length_error_if_list_empty)

@@ -1,13 +1,17 @@
 #include <gtest/gtest.h>
 #include "intlist.typealias.helper.h"
+#include "compare-list.helper.h"
 #include "resource.helper.h"
 
-TEST(push_back_by_mov, should_push_back)
+TEST(push_back_by_mov, should_push_at_end)
 {
-	int newvalue = 4;
-	intlist testlist{ 1,2,3 };
-	testlist.push_back(std::move(newvalue));
-	EXPECT_EQ(testlist.back(), newvalue);
+	int new_value = 4;
+	intlist expected_list{ 1,2,3,new_value };
+
+	intlist list{ 1,2,3 };
+
+	ASSERT_NO_FATAL_FAILURE(list.push_back(std::move(new_value)));
+	EXPECT_TRUE(compare_list(expected_list, list));
 }
 
 TEST_F(test_resource_list, push_back_by_mov_should_not_copy_but_move)

@@ -8,8 +8,8 @@ TEST(insert_by_iterator, should_insert_succesfully_at_begin)
 	intlist expected_list = { new_value ,1,2,3 };
 
 	intlist list{ 1,2,3 };
-	EXPECT_NO_FATAL_FAILURE(list.insert(list.begin(), new_value));	
 
+	ASSERT_NO_FATAL_FAILURE(list.insert(list.begin(), new_value));
 	EXPECT_TRUE(compare_list(list, expected_list));
 }
 
@@ -19,8 +19,8 @@ TEST(insert_by_iterator, should_insert_succesfully_at_end)
 	intlist expected_list = { 1,2,3, new_value };
 
 	intlist list{ 1,2,3 };
-	EXPECT_NO_FATAL_FAILURE(list.insert(list.end(), new_value));
 
+	ASSERT_NO_FATAL_FAILURE(list.insert(list.end(), new_value));
 	EXPECT_TRUE(compare_list(list, expected_list));
 }
 
@@ -32,8 +32,8 @@ TEST(insert_by_iterator, should_insert_succesfully_at_random_pos)
 	intlist list{ 1,2,3 };
 	intlist::iterator it = list.begin();
 	std::advance(it, 2);
-	list.insert(it, new_value);
 
+	ASSERT_NO_FATAL_FAILURE(list.insert(it, new_value));
 	EXPECT_TRUE(compare_list(list, expected_list));
 }
 

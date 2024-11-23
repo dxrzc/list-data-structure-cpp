@@ -1,13 +1,41 @@
 #include <gtest/gtest.h>
 #include "intlist.typealias.helper.h"
+#include "compare-list.helper.h"
 #include "resource.helper.h"
 
-TEST(insert_by_movement, should_insert_successfully)
+TEST(insert_by_mov, should_insert_succesfully_at_begin)
+{
+	int new_value = 0;
+	intlist expected_list = { new_value ,1,2,3 };
+
+	intlist list{ 1,2,3 };
+
+	ASSERT_NO_FATAL_FAILURE(list.insert(list.begin(), std::move(new_value)));
+	EXPECT_TRUE(compare_list(list, expected_list));
+}
+
+TEST(insert_by_mov, should_insert_succesfully_at_end)
+{
+	int new_value = 4;
+	intlist expected_list = { 1,2,3, new_value };
+
+	intlist list{ 1,2,3 };
+
+	ASSERT_NO_FATAL_FAILURE(list.insert(list.end(), std::move(new_value)));
+	EXPECT_TRUE(compare_list(list, expected_list));
+}
+
+TEST(insert_by_mov, should_insert_succesfully_at_random_pos)
 {
 	int new_value = 100;
+	intlist expected_list = { 1,2,100,3 };
+
 	intlist list{ 1,2,3 };
-	list.insert(list.begin(), std::move(new_value));
-	EXPECT_EQ(list.front(), new_value);
+	intlist::iterator it = list.begin();
+	std::advance(it, 2);
+
+	ASSERT_NO_FATAL_FAILURE(list.insert(it, std::move(new_value)));
+	EXPECT_TRUE(compare_list(list, expected_list));
 }
 
 TEST_F(test_resource_list, insert_by_mov_should_not_copy)
