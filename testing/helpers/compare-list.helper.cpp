@@ -1,5 +1,7 @@
 #include "compare-list.helper.h"
 
+// In order to get a error message with both lists printed in console
+// use this helper instead of just "==" operator
 testing::AssertionResult compare_list(const intlist& list, const intlist& list2)
 {
 	if (list == list2)
