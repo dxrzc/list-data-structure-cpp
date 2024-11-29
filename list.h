@@ -952,4 +952,22 @@ public:
 
 		return false;
 	}
+	
+	void reverse()
+	{
+		link* first_node = head.next;
+
+		while (first_node != &head)
+		{
+			link* previous = first_node->previous;
+			first_node->previous= first_node->next;
+			first_node->next = previous;
+			// the next one is now the "previous"
+			first_node = first_node->previous;
+		}
+
+		link* head_prev = head.previous;
+		head.previous = head.next;
+		head.next = head_prev;
+	}
 };
