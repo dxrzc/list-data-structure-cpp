@@ -383,7 +383,7 @@ public:
 
 	[[nodiscard]] bool empty() const noexcept
 	{
-		return nelms == 0;
+		return head.next == &head;
 	}
 
 	T& front()
