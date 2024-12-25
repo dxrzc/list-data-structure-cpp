@@ -13,6 +13,7 @@ TEST_F(test_resource_list, constructor_by_mov_should_not_copy)
 	list<test_resource> tested_list(std::move(test_resource_list));
 
 	EXPECT_EQ(test_resource::copy_constructor, 0);
+	EXPECT_EQ(test_resource::instances_created, 3);
 }
 
 TEST(constructor_by_mov, rhs_list_should_be_empty)
