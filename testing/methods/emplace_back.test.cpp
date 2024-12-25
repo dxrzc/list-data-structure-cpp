@@ -14,7 +14,7 @@ TEST(emplace_back, should_insert_sucesfully_at_end)
 	EXPECT_TRUE(compare_list(expected_list, list));
 }
 
-TEST_F(test_resource_list, emplace_back_should_not_copy)
+TEST_F(constructor_operations_test, emplace_back_should_not_copy)
 {
 	list<test_resource> test_resource_list;
 

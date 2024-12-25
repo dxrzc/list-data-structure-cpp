@@ -22,7 +22,7 @@ public:
 	~test_resource() { ++destructor_calls; }
 };
 
-class test_resource_list : public ::testing::Test
+class constructor_operations_test : public ::testing::Test
 {
 protected:
 	void SetUp() override

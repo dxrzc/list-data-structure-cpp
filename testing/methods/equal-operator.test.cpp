@@ -13,7 +13,7 @@ TEST(equal_operator, should_create_and_assign)
 	EXPECT_TRUE(compare_list(newlist, list));
 }
 
-TEST_F(test_resource_list, equal_operator_should_delete_its_elements_before_assign)
+TEST_F(constructor_operations_test, equal_operator_should_delete_its_elements_before_assign)
 {
 	list<test_resource> test_resource_list;
 

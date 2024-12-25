@@ -14,7 +14,7 @@ TEST(push_front_by_mov, should_push_at_begin)
 	EXPECT_TRUE(compare_list(testlist, expected_list));
 }
 
-TEST_F(test_resource_list, push_front_by_mov_should_not_copy)
+TEST_F(constructor_operations_test, push_front_by_mov_should_not_copy)
 {
 	test_resource resource;
 	list<test_resource> test_resource_list;

@@ -38,7 +38,7 @@ TEST(insert_by_mov, should_insert_succesfully_at_random_pos)
 	EXPECT_TRUE(compare_list(list, expected_list));
 }
 
-TEST_F(test_resource_list, insert_by_mov_should_not_copy)
+TEST_F(constructor_operations_test, insert_by_mov_should_not_copy)
 {
 	list<test_resource> test_resource_list;
 	test_resource res;

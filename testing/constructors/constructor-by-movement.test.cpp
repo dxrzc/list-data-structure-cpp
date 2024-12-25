@@ -2,7 +2,7 @@
 #include "intlist.typealias.helper.h"
 #include "resource.helper.h"
 
-TEST_F(test_resource_list, constructor_by_mov_should_not_copy)
+TEST_F(constructor_operations_test, constructor_by_mov_should_not_copy)
 {	
 	list<test_resource> test_resource_list;
 	// rvalue forwarding makes no copies

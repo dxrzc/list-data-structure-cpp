@@ -38,7 +38,7 @@ TEST(emplace_by_iterator, should_insert_sucesfully_at_random_pos)
 	EXPECT_TRUE(compare_list(list, expected_list));
 }
 
-TEST_F(test_resource_list, emplace_by_iterator_should_not_copy)
+TEST_F(constructor_operations_test, emplace_by_iterator_should_not_copy)
 {
 	list<test_resource> test_resource_list;
 
