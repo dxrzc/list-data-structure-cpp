@@ -25,14 +25,11 @@ public:
 class test_resource_list : public ::testing::Test
 {
 protected:
-	list<test_resource> test_list;
 	void SetUp() override
 	{
 		test_resource::copy_constructor = 0;
 		test_resource::movement_constructor = 0;
 		test_resource::instances_created = 0;
-		test_resource::destructor_calls = 0;
-		test_list.clear();
-		assert(test_list.size() == 0);
+		test_resource::destructor_calls = 0;		
 	}
 };

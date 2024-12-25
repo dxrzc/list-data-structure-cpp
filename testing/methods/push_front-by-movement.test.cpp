@@ -14,10 +14,13 @@ TEST(push_front_by_mov, should_push_at_begin)
 	EXPECT_TRUE(compare_list(testlist, expected_list));
 }
 
-TEST_F(test_resource_list, push_front_by_mov_should_not_copy_but_move)
+TEST_F(test_resource_list, push_front_by_mov_should_not_copy)
 {
 	test_resource resource;
-	test_list.push_front(std::move(resource));
+	list<test_resource> test_resource_list;
+
+	test_resource_list.push_front(std::move(resource));
+
 	EXPECT_EQ(test_resource::instances_created, 1);
 	EXPECT_EQ(test_resource::movement_constructor, 1);
 }

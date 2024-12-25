@@ -40,7 +40,10 @@ TEST(emplace_by_iterator, should_insert_sucesfully_at_random_pos)
 
 TEST_F(test_resource_list, emplace_by_iterator_should_not_copy)
 {
-	test_list.emplace(test_list.end(), test_resource());
+	list<test_resource> test_resource_list;
+
+	test_resource_list.emplace(test_resource_list.end(), test_resource());
+
 	EXPECT_EQ(test_resource::instances_created, 1);
 }
 

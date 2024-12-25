@@ -40,8 +40,11 @@ TEST(insert_by_mov, should_insert_succesfully_at_random_pos)
 
 TEST_F(test_resource_list, insert_by_mov_should_not_copy)
 {
+	list<test_resource> test_resource_list;
 	test_resource res;
-	test_list.insert(test_list.end(), std::move(res));
+
+	test_resource_list.insert(test_resource_list.end(), std::move(res));
+
 	EXPECT_EQ(test_resource::instances_created, 1);
 }
 

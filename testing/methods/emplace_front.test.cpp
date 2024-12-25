@@ -16,8 +16,10 @@ TEST(emplace_front, should_insert_sucesfully_at_begin)
 
 TEST_F(test_resource_list, emplace_front_should_not_copy)
 {
-	// constructs a test_resource(100)
-	test_list.emplace_front(100);
+	list<test_resource> test_resource_list;
+
+	test_resource_list.emplace_front(100);
+
 	EXPECT_EQ(test_resource::instances_created, 1);
 }
 

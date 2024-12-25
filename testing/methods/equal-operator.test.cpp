@@ -15,12 +15,14 @@ TEST(equal_operator, should_create_and_assign)
 
 TEST_F(test_resource_list, equal_operator_should_delete_its_elements_before_assign)
 {
+	list<test_resource> test_resource_list;
+
 	// constructs two test_resources with no copies 
-	test_list.emplace_back(1);
-	test_list.emplace_back(2);
+	test_resource_list.emplace_back(1);
+	test_resource_list.emplace_back(2);
 	
 	const list<test_resource> new_resource_list; 
-	test_list = new_resource_list;
+	test_resource_list = new_resource_list;
 
 	EXPECT_EQ(test_resource::destructor_calls, 2);
 }
