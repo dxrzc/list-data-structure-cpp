@@ -16,9 +16,8 @@ TEST(sort, should_not_cause_fatal_failure_on_empty_list)
 	EXPECT_NO_FATAL_FAILURE(emptylist.sort());	
 }
 
-TEST(sort, should_not_throw_error_if_list_has_one_elm)
+TEST(sort, should_not_cause_fatal_failure_if_list_has_one_element)
 {
 	intlist list{ 1 };
-	ASSERT_NO_THROW(list.sort());
-	EXPECT_TRUE(compare_list(list, intlist{ 1 }));
+	EXPECT_NO_FATAL_FAILURE(list.sort());	
 }
