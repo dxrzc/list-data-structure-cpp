@@ -6,6 +6,7 @@ Low-level circular doubly linked list data structure with a header node in C++.
 - Iterator class  – Standard iterator for list traversal.
 - Reverse iterator class – Traverse the list in reverse order.
 - Const reverse iterator class – Immutable reverse iteration.
+- std::advance and foreach support when working with iterators
 - Movement semantic – Efficient resource transfer between lists.
 - Emplace elements – Construct elements directly in the list using arguments.
 - Reverse the list - Invert the order of the elements.
@@ -15,7 +16,7 @@ Low-level circular doubly linked list data structure with a header node in C++.
 - Find element and return iterator to the cell – Locate elements and return an iterator to them.
 - And more...
 
-## Steps for building and run tests
+## Build and run tests
 ```
 git clone https://github.com/itsdrc/list-data-structure-cpp.git
 cd list-data-structure-cpp
@@ -35,3 +36,52 @@ Or run the executable manually
 cd Debug
 ./testing
 ```
+
+## Usage
+Copy the list.h file into your project and include it. For example:
+```
+#include "list.h"
+
+class Resource
+{
+private:
+	std::string test_string;
+	int test_int;
+
+public:
+	// default constructor deleted
+	Resource() = delete;
+
+	Resource(const std::string& test_string, int test_int)
+		: test_string(test_string), test_int(test_int) {}
+
+	friend std::ostream& operator<<(std::ostream& os, const Resource& res)
+	{
+		os << res.test_string << ' ' << res.test_int << '\n';
+		return os;
+	}
+};
+
+int main()
+{
+	list<Resource> resources_list;
+
+	// create and insert a resource
+	Resource test_resource ("test string 0", 0);
+	resources_list.push_back(test_resource);
+
+	// create a resource directly in the list
+	resources_list.emplace_back("test string 1", 1);
+
+	for (const Resource& res : resources_list)
+		std::cout << res;
+}
+```
+
+Output: 
+```
+test string 0 0
+test string 1 1
+```
+
+
