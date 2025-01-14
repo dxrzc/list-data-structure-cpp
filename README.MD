@@ -1,6 +1,8 @@
 # List Data Structure
 Low-level circular doubly linked list data structure with a header node in C++.
 
+![image](https://github.com/itsdrc/list-data-structure-cpp/blob/37844bf523c203d8204c2fb45ef04c1a15e561a6/list.png)
+
 ## Features
 - Flexible Header Construction - This data structure can be instantiated even if the template argument does not have a default constructor
 - Iterator class  – Standard iterator for list traversal.
