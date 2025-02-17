@@ -20,7 +20,7 @@ Low-level circular doubly linked list data structure with a header node in C++.
 
 ## Build and run tests
 ```
-git clone https://github.com/itsdrc/list-data-structure-cpp.git
+git clone https://github.com/dxrzc/list-data-structure-cpp.git
 cd list-data-structure-cpp
 mkdir build
 cd build
