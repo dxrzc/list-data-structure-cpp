@@ -312,14 +312,10 @@ public:
 	/*
 	* @brief Inserts a new element at the end of the list
 	*/
-	void push_back(const T& new_value)
+	template <typename U>
+	void push_back(U&& new_value)
 	{
-		emplace_back(new_value);
-	}
-
-	void push_back(T&& newvalue)
-	{
-		emplace_back(std::move(newvalue));
+		emplace_back(std::forward<U>(new_value));
 	}
 
 	/*
@@ -338,14 +334,10 @@ public:
 	/*
 	* @brief Inserts a new element at the front of the list.
 	*/
-	void push_front(const T& new_value)
+	template <typename U>
+	void push_front(U&& new_value)
 	{
-		emplace_front(new_value);
-	}
-
-	void push_front(T&& newvalue)
-	{
-		emplace_front(std::move(newvalue));
+		emplace_front(std::forward<U>(new_value));
 	}
 
 	/*
