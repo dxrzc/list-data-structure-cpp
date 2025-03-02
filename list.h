@@ -785,18 +785,11 @@ public:
 	* @param new_value The value to insert into the list.
 	* @return An iterator pointing to the newly inserted element.
 	*/
-	template<typename It>
+	template<typename It, typename U>
 		requires IteratorLike<list, It>
-	It insert(It it, const T& newvalue)
+	It insert(It it, U&& new_value)
 	{
-		return emplace<It>(it, newvalue);
-	}
-
-	template<typename It>
-		requires IteratorLike<list, It>
-	It insert(It it, T&& new_value)
-	{
-		return emplace<It>(it, std::move(new_value));
+		return emplace<It>(it, std::forward<U>(new_value));
 	}
 
 	/*
