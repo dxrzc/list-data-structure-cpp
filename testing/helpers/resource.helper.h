@@ -17,7 +17,11 @@ public:
 	static unsigned destructor_calls;
 
 	test_resource(uint16_t testvalue_) : testvalue(testvalue_) { ++instances_created; }
-	test_resource(const test_resource& rhs) :testvalue(rhs.testvalue) { ++copy_constructor; }
+	test_resource(const test_resource& rhs) :testvalue(rhs.testvalue) 
+	{ 
+		++instances_created;
+		++copy_constructor; 
+	}
 	test_resource(test_resource&& rhs) noexcept : testvalue(std::move(rhs.testvalue)) { ++movement_constructor; }
 	~test_resource() { ++destructor_calls; }
 };
