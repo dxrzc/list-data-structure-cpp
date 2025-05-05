@@ -1,8 +1,8 @@
 ﻿#pragma once
 
-#include<iostream>
-#include<utility>
-#include<functional>
+#include <iostream>
+#include <utility>
+#include <functional>
 
 template <typename List, typename It>
 concept IteratorLike = std::same_as<It, typename List::iterator>
@@ -58,7 +58,7 @@ private:
 	link head;
 	std::size_t nelms;
 
-	void deepCopy(const list& list)
+	void deep_copy(const list& list)
 	{
 		link* aux = list.head.next;
 		while (aux != &list.head)
@@ -72,17 +72,17 @@ private:
 	}
 
 	// pimpl technique
-	class iteratorImpl
+	class iterator_impl
 	{
 	private:
 		link* linker;
 
 	public:
 		friend class list;
-		iteratorImpl(link* linker_) : linker(linker_) {}
-		iteratorImpl(const iteratorImpl& itImpl) : linker(itImpl.linker) {}
+		iterator_impl(link* linker_) : linker(linker_) {}
+		iterator_impl(const iterator_impl& itImpl) : linker(itImpl.linker) {}
 
-		iteratorImpl& operator=(const iteratorImpl& itImpl)
+		iterator_impl& operator=(const iterator_impl& itImpl)
 		{
 			if (this != &itImpl)
 				linker = itImpl.linker;
@@ -107,12 +107,12 @@ private:
 			return node_ptr->value;
 		}
 
-		bool operator==(const iteratorImpl& itImpl) const noexcept { return linker == itImpl.linker; }
+		bool operator==(const iterator_impl& itImpl) const noexcept { return linker == itImpl.linker; }
 	};
 
 	// internal function to pop an element using an iterator
 	template<class It>
-	link* popPosition(It it)
+	link* pop_position(It it)
 	{
 		if (empty())
 			throw std::length_error("pop called on empty list");
@@ -136,7 +136,7 @@ private:
 
 	// internal function to create an element using an iterator
 	template<typename It, typename ...Args>
-	link* emplaceAt(It it, Args&& ...args)
+	link* emplace_at(It it, Args&& ...args)
 	{
 		link* it_linker = it.pimpl.get()->linker;
 		link* it_previous_linker = it_linker->previous;
@@ -150,7 +150,7 @@ private:
 		return new_node;
 	}
 
-	void swapElements(link* first, link* second)
+	void swap_elements(link* first, link* second)
 	{
 		if (first == second)
 			return;
@@ -202,7 +202,7 @@ private:
 		}
 	}
 
-	link* findValue(const T& value)
+	link* find_value(const T& value)
 	{
 		link* current_cell = head.next;
 
@@ -248,7 +248,7 @@ public:
 
 	list(const list& list) : list()
 	{
-		deepCopy(list);
+		deep_copy(list);
 	}
 
 	list& operator=(const list& list)
@@ -256,7 +256,7 @@ public:
 		if (this != &list)
 		{
 			clear();
-			deepCopy(list);
+			deep_copy(list);
 		}
 
 		return *this;
@@ -435,7 +435,7 @@ public:
 	class iterator
 	{
 	private:
-		std::unique_ptr<iteratorImpl> pimpl;
+		std::unique_ptr<iterator_impl> pimpl;
 
 	public:
 		friend class list;
@@ -446,13 +446,13 @@ public:
 		using reference = T&;
 
 		iterator() : pimpl(nullptr) {}
-		iterator(link* linker) : pimpl(std::make_unique<iteratorImpl>(linker)) {}
-		iterator(const iterator& it) : pimpl(std::make_unique<iteratorImpl>(*(it.pimpl.get()))) {}
+		iterator(link* linker) : pimpl(std::make_unique<iterator_impl>(linker)) {}
+		iterator(const iterator& it) : pimpl(std::make_unique<iterator_impl>(*(it.pimpl.get()))) {}
 
 		iterator operator=(const iterator& it)
 		{
 			if (this != &it)
-				pimpl = std::make_unique<iteratorImpl>(*(it.pimpl.get()));
+				pimpl = std::make_unique<iterator_impl>(*(it.pimpl.get()));
 			return *this;
 		}
 
@@ -503,7 +503,7 @@ public:
 	class const_iterator
 	{
 	private:
-		std::unique_ptr<iteratorImpl> pimpl;
+		std::unique_ptr<iterator_impl> pimpl;
 
 	public:
 		friend class list;
@@ -514,21 +514,21 @@ public:
 		using reference = const T&;
 
 		const_iterator() : pimpl(nullptr) {}
-		const_iterator(const link* linker) :pimpl(std::make_unique<iteratorImpl>(const_cast<link*>(linker))) {}
-		const_iterator(const const_iterator& cit) : pimpl(std::make_unique<iteratorImpl>(*(cit.pimpl.get()))) {}
-		const_iterator(const iterator& it) :pimpl(std::make_unique<iteratorImpl>(*(it.pimpl.get()))) {}
+		const_iterator(const link* linker) :pimpl(std::make_unique<iterator_impl>(const_cast<link*>(linker))) {}
+		const_iterator(const const_iterator& cit) : pimpl(std::make_unique<iterator_impl>(*(cit.pimpl.get()))) {}
+		const_iterator(const iterator& it) :pimpl(std::make_unique<iterator_impl>(*(it.pimpl.get()))) {}
 
 		const_iterator& operator=(const const_iterator& cit)
 		{
 			if (this != &cit)
-				pimpl = std::make_unique<iteratorImpl>(*(cit.pimpl.get()));
+				pimpl = std::make_unique<iterator_impl>(*(cit.pimpl.get()));
 			return *this;
 		}
 
 		const_iterator& operator=(const iterator& it)
 		{
 			if (this != &it)
-				pimpl = std::make_unique<iteratorImpl>(*(it.pimpl.get()));
+				pimpl = std::make_unique<iterator_impl>(*(it.pimpl.get()));
 			return *this;
 		}
 
@@ -591,7 +591,7 @@ public:
 	class reverse_iterator
 	{
 	private:
-		std::unique_ptr<iteratorImpl> pimpl;
+		std::unique_ptr<iterator_impl> pimpl;
 
 	public:
 		friend class list;
@@ -602,21 +602,21 @@ public:
 		using reference = T&;
 
 		reverse_iterator() : pimpl(nullptr) {}
-		reverse_iterator(const link* linker) :pimpl(std::make_unique<iteratorImpl>(const_cast<link*>(linker))) {}
-		reverse_iterator(const iterator& it) :pimpl(std::make_unique<iteratorImpl>(*(it.pimpl.get()))) {}
-		reverse_iterator(const reverse_iterator& revit) : pimpl(std::make_unique<iteratorImpl>(*(revit.pimpl.get()))) {}
+		reverse_iterator(const link* linker) :pimpl(std::make_unique<iterator_impl>(const_cast<link*>(linker))) {}
+		reverse_iterator(const iterator& it) :pimpl(std::make_unique<iterator_impl>(*(it.pimpl.get()))) {}
+		reverse_iterator(const reverse_iterator& revit) : pimpl(std::make_unique<iterator_impl>(*(revit.pimpl.get()))) {}
 
 		reverse_iterator& operator=(const reverse_iterator& revit)
 		{
 			if (this != &revit)
-				pimpl = std::make_unique<iteratorImpl>(*(revit.pimpl.get()));
+				pimpl = std::make_unique<iterator_impl>(*(revit.pimpl.get()));
 			return *this;
 		}
 
 		reverse_iterator& operator=(const iterator& it)
 		{
 			if (this != &it)
-				pimpl = std::make_unique<iteratorImpl>(*(it.pimpl.get()));
+				pimpl = std::make_unique<iterator_impl>(*(it.pimpl.get()));
 			return *this;
 		}
 
@@ -670,7 +670,7 @@ public:
 	class const_reverse_iterator
 	{
 	private:
-		std::unique_ptr<iteratorImpl> pimpl;
+		std::unique_ptr<iterator_impl> pimpl;
 
 	public:
 		friend class list;
@@ -681,37 +681,37 @@ public:
 		using reference = const T&;
 
 		const_reverse_iterator() : pimpl(nullptr) {}
-		const_reverse_iterator(const link* linker) :pimpl(std::make_unique<iteratorImpl>(const_cast<link*>(linker))) {}
-		const_reverse_iterator(const iterator& it) :pimpl(std::make_unique<iteratorImpl>(*(it.pimpl.get()))) {}
-		const_reverse_iterator(const const_iterator& cit) :pimpl(std::make_unique<iteratorImpl>(*(cit.pimpl.get()))) {}
-		const_reverse_iterator(const reverse_iterator& revit) : pimpl(std::make_unique<iteratorImpl>(*(revit.pimpl.get()))) {}
-		const_reverse_iterator(const const_reverse_iterator& crevit) : pimpl(std::make_unique<iteratorImpl>(*(crevit.pimpl.get()))) {}
+		const_reverse_iterator(const link* linker) :pimpl(std::make_unique<iterator_impl>(const_cast<link*>(linker))) {}
+		const_reverse_iterator(const iterator& it) :pimpl(std::make_unique<iterator_impl>(*(it.pimpl.get()))) {}
+		const_reverse_iterator(const const_iterator& cit) :pimpl(std::make_unique<iterator_impl>(*(cit.pimpl.get()))) {}
+		const_reverse_iterator(const reverse_iterator& revit) : pimpl(std::make_unique<iterator_impl>(*(revit.pimpl.get()))) {}
+		const_reverse_iterator(const const_reverse_iterator& crevit) : pimpl(std::make_unique<iterator_impl>(*(crevit.pimpl.get()))) {}
 
 		const_reverse_iterator& operator=(const const_reverse_iterator& crevit)
 		{
 			if (this != &crevit)
-				pimpl = std::make_unique<iteratorImpl>(*(crevit.pimpl.get()));
+				pimpl = std::make_unique<iterator_impl>(*(crevit.pimpl.get()));
 			return *this;
 		}
 
 		const_reverse_iterator& operator=(const reverse_iterator& revit)
 		{
 			if (this != &revit)
-				pimpl = std::make_unique<iteratorImpl>(*(revit.pimpl.get()));
+				pimpl = std::make_unique<iterator_impl>(*(revit.pimpl.get()));
 			return *this;
 		}
 
 		const_reverse_iterator& operator=(const const_iterator& cit)
 		{
 			if (this != &cit)
-				pimpl = std::make_unique<iteratorImpl>(*(cit.pimpl.get()));
+				pimpl = std::make_unique<iterator_impl>(*(cit.pimpl.get()));
 			return *this;
 		}
 
 		const_reverse_iterator& operator=(const iterator& it)
 		{
 			if (this != &it)
-				pimpl = std::make_unique<iteratorImpl>(*(it.pimpl.get()));
+				pimpl = std::make_unique<iterator_impl>(*(it.pimpl.get()));
 			return *this;
 		}
 
@@ -772,7 +772,7 @@ public:
 		requires IteratorLike<list, It>
 	It emplace(It it, Args&& ... args)
 	{
-		return emplaceAt<It>(it, std::forward<Args>(args)...);
+		return emplace_at<It>(it, std::forward<Args>(args)...);
 	}
 
 	/*
@@ -784,7 +784,7 @@ public:
 		requires IteratorLike<list, It>
 	It pop(It it)
 	{
-		return popPosition<It>(it);
+		return pop_position<It>(it);
 	}
 
 	/*
@@ -859,14 +859,14 @@ public:
 		if (empty() || nelms == 1)
 			return;
 
-		auto getLinkerAt = [&](std::size_t pos)-> link*
+		auto get_linker_at = [&](std::size_t pos)-> link*
 		{
 			const_iterator it = cbegin();
 			std::advance(it, pos);
 			return it.pimpl.get()->linker;
 		};
 
-		auto medianOfThree = [&](std::size_t a, std::size_t b, std::size_t c)
+		auto median_of_three = [&](std::size_t a, std::size_t b, std::size_t c)
 		{
 			if ((a <= b && b <= c) || (c <= b && b <= a))
 				return b;
@@ -876,37 +876,37 @@ public:
 				return c;
 		};
 
-		std::function<void(std::size_t, std::size_t)> quickSort = [&](std::size_t begin, std::size_t last)
+		std::function<void(std::size_t, std::size_t)> quick_sort = [&](std::size_t begin, std::size_t last)
 		{
 			if (begin < last)
 			{
-				const std::size_t pivotIndex = medianOfThree(begin, (begin + last) / 2, last);
-				link* pivotlinker = getLinkerAt(pivotIndex);
+				const std::size_t pivotIndex = median_of_three(begin, (begin + last) / 2, last);
+				link* pivotlinker = get_linker_at(pivotIndex);
 				const auto& pivotValue = static_cast<node*>(pivotlinker)->value;
 
-				link* lastlinker = getLinkerAt(last);
+				link* lastlinker = get_linker_at(last);
 
-				swapElements(pivotlinker, lastlinker);
+				swap_elements(pivotlinker, lastlinker);
 
 				std::size_t tracker = begin;
 
 				for (std::size_t i = begin; i < last; i++)
 				{
-					if (static_cast<node*>(getLinkerAt(i))->value < pivotValue)
+					if (static_cast<node*>(get_linker_at(i))->value < pivotValue)
 					{
-						swapElements(getLinkerAt(i), getLinkerAt(tracker));
+						swap_elements(get_linker_at(i), get_linker_at(tracker));
 						++tracker;
 					}
 				}
 
-				swapElements(getLinkerAt(tracker), getLinkerAt(last));
+				swap_elements(get_linker_at(tracker), get_linker_at(last));
 				if (tracker != 0)
-					quickSort(begin, tracker - 1);
-				quickSort(tracker + 1, last);
+					quick_sort(begin, tracker - 1);
+				quick_sort(tracker + 1, last);
 			}
 		};
 
-		quickSort(0, std::size_t(nelms - 1));
+		quick_sort(0, std::size_t(nelms - 1));
 	}
 
 	/**
@@ -917,7 +917,7 @@ public:
 	*/
 	iterator find(const T& value)
 	{
-		link* cell = findValue(value);
+		link* cell = find_value(value);
 		if (cell)
 			return cell;
 		else
@@ -926,7 +926,7 @@ public:
 
 	const_iterator find(const T& value) const
 	{
-		link* cell = findValue(value);
+		link* cell = find_value(value);
 		if (cell)
 			return cell;
 		else
