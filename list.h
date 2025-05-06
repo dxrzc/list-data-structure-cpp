@@ -78,7 +78,6 @@ private:
 		link* linker;
 
 	public:
-		friend class list;
 		iterator_impl(link* linker_) : linker(linker_) {}
 		iterator_impl(const iterator_impl& itImpl) : linker(itImpl.linker) {}
 
@@ -107,6 +106,11 @@ private:
 			return node_ptr->value;
 		}
 
+		link* get_linker() const noexcept
+		{
+			return linker;
+		}
+
 		bool operator==(const iterator_impl& itImpl) const noexcept { return linker == itImpl.linker; }
 	};
 
@@ -117,11 +121,11 @@ private:
 		if (empty())
 			throw std::length_error("pop called on empty list");
 
-		node* target = dynamic_cast<node*>(it.pimpl.get()->linker);
+		node* target = dynamic_cast<node*>(it.get_internal_linker());
 		if (!target)
 			throw std::runtime_error("pop called on head");
 
-		link* it_linker = it.pimpl.get()->linker;
+		link* it_linker = it.get_internal_linker();
 		link* it_previous_linker = it_linker->previous;
 		link* it_next_linker = it_linker->next;
 
@@ -138,7 +142,7 @@ private:
 	template<typename It, typename ...Args>
 	link* emplace_at(It it, Args&& ...args)
 	{
-		link* it_linker = it.pimpl.get()->linker;
+		link* it_linker = it.get_internal_linker();
 		link* it_previous_linker = it_linker->previous;
 
 		link* new_node = new node(it_previous_linker, it_linker, std::forward<Args>(args)...);
@@ -437,6 +441,11 @@ public:
 	private:
 		std::unique_ptr<iterator_impl> pimpl;
 
+		link* get_internal_linker() const noexcept
+		{
+			return pimpl.get()->get_linker();
+		}
+
 	public:
 		friend class list;
 		using iterator_category = std::bidirectional_iterator_tag;
@@ -448,11 +457,12 @@ public:
 		iterator() : pimpl(nullptr) {}
 		iterator(link* linker) : pimpl(std::make_unique<iterator_impl>(linker)) {}
 		iterator(const iterator& it) : pimpl(std::make_unique<iterator_impl>(*(it.pimpl.get()))) {}
+		// TODO: other conversions.		
 
-		iterator operator=(const iterator& it)
+		iterator& operator=(const iterator& it)
 		{
 			if (this != &it)
-				pimpl = std::make_unique<iterator_impl>(*(it.pimpl.get()));
+				*pimpl.get() = *it.pimpl.get();
 			return *this;
 		}
 
@@ -505,6 +515,11 @@ public:
 	private:
 		std::unique_ptr<iterator_impl> pimpl;
 
+		link* get_internal_linker() const noexcept
+		{
+			return pimpl.get()->get_linker();
+		}
+
 	public:
 		friend class list;
 		using iterator_category = std::bidirectional_iterator_tag;
@@ -521,7 +536,7 @@ public:
 		const_iterator& operator=(const const_iterator& cit)
 		{
 			if (this != &cit)
-				pimpl = std::make_unique<iterator_impl>(*(cit.pimpl.get()));
+				*pimpl.get() = *cit.pimpl.get();
 			return *this;
 		}
 
@@ -593,6 +608,11 @@ public:
 	private:
 		std::unique_ptr<iterator_impl> pimpl;
 
+		link* get_internal_linker() const noexcept
+		{
+			return pimpl.get()->get_linker();
+		}
+
 	public:
 		friend class list;
 		using iterator_category = std::bidirectional_iterator_tag;
@@ -609,7 +629,7 @@ public:
 		reverse_iterator& operator=(const reverse_iterator& revit)
 		{
 			if (this != &revit)
-				pimpl = std::make_unique<iterator_impl>(*(revit.pimpl.get()));
+				*pimpl.get() = *revit.pimpl.get();
 			return *this;
 		}
 
@@ -672,6 +692,11 @@ public:
 	private:
 		std::unique_ptr<iterator_impl> pimpl;
 
+		link* get_internal_linker() const noexcept
+		{
+			return pimpl.get()->get_linker();
+		}
+
 	public:
 		friend class list;
 		using iterator_category = std::bidirectional_iterator_tag;
@@ -690,28 +715,28 @@ public:
 		const_reverse_iterator& operator=(const const_reverse_iterator& crevit)
 		{
 			if (this != &crevit)
-				pimpl = std::make_unique<iterator_impl>(*(crevit.pimpl.get()));
+				*pimpl.get() = *crevit.pimpl.get();
 			return *this;
 		}
 
 		const_reverse_iterator& operator=(const reverse_iterator& revit)
 		{
 			if (this != &revit)
-				pimpl = std::make_unique<iterator_impl>(*(revit.pimpl.get()));
+				*pimpl.get() = *revit.pimpl.get();
 			return *this;
 		}
 
 		const_reverse_iterator& operator=(const const_iterator& cit)
 		{
 			if (this != &cit)
-				pimpl = std::make_unique<iterator_impl>(*(cit.pimpl.get()));
+				*pimpl.get() = *cit.pimpl.get();
 			return *this;
 		}
 
 		const_reverse_iterator& operator=(const iterator& it)
 		{
 			if (this != &it)
-				pimpl = std::make_unique<iterator_impl>(*(it.pimpl.get()));
+				*pimpl.get() = *it.pimpl.get();
 			return *this;
 		}
 
@@ -839,7 +864,7 @@ public:
 		requires IteratorLike<list, It>
 	void splice(It where, list& rightlist)
 	{
-		link* lnk = where.pimpl.get()->linker;
+		link* lnk = where.get_internal_linker();
 		link* nextE = lnk->next;
 
 		lnk->next = rightlist.head.next;
@@ -863,7 +888,7 @@ public:
 		{
 			const_iterator it = cbegin();
 			std::advance(it, pos);
-			return it.pimpl.get()->linker;
+			return it.get_internal_linker();
 		};
 
 		auto median_of_three = [&](std::size_t a, std::size_t b, std::size_t c)
