@@ -94,12 +94,12 @@ private:
 			linker = linker->next;
 		}
 
-		void goback()
+		void go_back()
 		{
 			linker = linker->previous;
 		}
 
-		T& getValue()
+		T& get_value()
 		{
 			node* node_ptr = dynamic_cast<node*>(linker);
 			if (!node_ptr)
@@ -471,20 +471,20 @@ public:
 
 		iterator& operator--()
 		{
-			pimpl.get()->goback();
+			pimpl.get()->go_back();
 			return *this;
 		}
 
 		iterator operator--(int)
 		{
 			auto aux = *this;
-			pimpl.get()->goback();
+			pimpl.get()->go_back();
 			return aux;
 		}
 
 		T& operator*()
 		{
-			return pimpl.get()->getValue();
+			return pimpl.get()->get_value();
 		}
 
 		bool operator==(const iterator& it) const noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }
@@ -547,20 +547,20 @@ public:
 
 		const_iterator& operator--()
 		{
-			pimpl.get()->goback();
+			pimpl.get()->go_back();
 			return *this;
 		}
 
 		const_iterator operator--(int)
 		{
 			auto aux = *this;
-			pimpl.get()->goback();
+			pimpl.get()->go_back();
 			return aux;
 		}
 
 		const T& operator*() const
 		{
-			return pimpl.get()->getValue();
+			return pimpl.get()->get_value();
 		}
 
 		bool operator==(const const_iterator cit) const noexcept { return *(pimpl.get()) == *(cit.pimpl.get()); }
@@ -622,14 +622,14 @@ public:
 
 		reverse_iterator& operator++()
 		{
-			pimpl.get()->goback();
+			pimpl.get()->go_back();
 			return *this;
 		}
 
 		reverse_iterator operator++(int)
 		{
 			auto aux = *this;
-			pimpl.get()->goback();
+			pimpl.get()->go_back();
 			return aux;
 		}
 
@@ -648,7 +648,7 @@ public:
 
 		T& operator*() const
 		{
-			return pimpl.get()->getValue();
+			return pimpl.get()->get_value();
 		}
 
 		bool operator==(const reverse_iterator revit) const noexcept { return *(pimpl.get()) == *(revit.pimpl.get()); }
@@ -717,14 +717,14 @@ public:
 
 		const_reverse_iterator& operator++()
 		{
-			pimpl.get()->goback();
+			pimpl.get()->go_back();
 			return *this;
 		}
 
 		const_reverse_iterator operator++(int)
 		{
 			auto aux = *this;
-			pimpl.get()->goback();
+			pimpl.get()->go_back();
 			return aux;
 		}
 
@@ -743,7 +743,7 @@ public:
 
 		const T& operator*() const
 		{
-			return pimpl.get()->getValue();
+			return pimpl.get()->get_value();
 		}
 
 		bool operator==(const const_reverse_iterator& crevit) const noexcept { return *(pimpl.get()) == *(crevit.pimpl.get()); }
