@@ -1,5 +1,34 @@
 #include <gtest/gtest.h>
+#include <type_traits>
 #include "intlist.typealias.helper.h"
+
+static_assert(!std::is_constructible<intlist::iterator, intlist::const_iterator>::value, 
+    "iterator should not be constructible from const_iterator");
+
+static_assert(!std::is_constructible<intlist::iterator, intlist::const_reverse_iterator>::value,
+    "iterator should not be constructible from const_reverse_iterator");
+
+TEST(iterator, successful_construction_based_on_another_iterator)
+{
+    intlist list{ 1,2,3,4,5 };
+    intlist::iterator another_iterator = list.begin();
+    std::advance(another_iterator, 2);
+
+    intlist::iterator it = another_iterator;
+
+    EXPECT_EQ(*it, *another_iterator);
+}
+
+TEST(iterator, successful_construction_based_on_reverse_iterator)
+{
+    intlist list{ 1,2,3,4,5 };
+    intlist::reverse_iterator revit = list.rbegin();
+    std::advance(revit, 2);
+
+    intlist::iterator it(revit);
+
+    EXPECT_EQ(*it , *revit);
+}
 
 TEST(iterator, begin_should_return_iterator_to_begin)
 {
