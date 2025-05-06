@@ -464,7 +464,12 @@ public:
 		iterator& operator=(const iterator& it)
 		{
 			if (this != &it)
-				*pimpl.get() = *it.pimpl.get();
+			{
+				if (!pimpl)
+					pimpl = std::make_unique<iterator_impl>(*it.pimpl);
+				else
+					*pimpl.get() = *it.pimpl.get();
+			}
 			return *this;
 		}
 
@@ -538,14 +543,12 @@ public:
 		const_iterator& operator=(const const_iterator& cit)
 		{
 			if (this != &cit)
-				*pimpl.get() = *cit.pimpl.get();
-			return *this;
-		}
-
-		const_iterator& operator=(const iterator& it)
-		{
-			if (this != &it)
-				pimpl = std::make_unique<iterator_impl>(*(it.pimpl.get()));
+			{
+				if (!pimpl)
+					pimpl = std::make_unique<iterator_impl>(*cit.pimpl);
+				else
+					*pimpl.get() = *cit.pimpl.get();
+			}
 			return *this;
 		}
 
@@ -604,7 +607,6 @@ public:
 		return &head;
 	}
 
-
 	class reverse_iterator
 	{
 	private:
@@ -631,14 +633,12 @@ public:
 		reverse_iterator& operator=(const reverse_iterator& revit)
 		{
 			if (this != &revit)
-				*pimpl.get() = *revit.pimpl.get();
-			return *this;
-		}
-
-		reverse_iterator& operator=(const iterator& it)
-		{
-			if (this != &it)
-				pimpl = std::make_unique<iterator_impl>(*(it.pimpl.get()));
+			{
+				if (!pimpl)
+					pimpl = std::make_unique<iterator_impl>(*revit.pimpl);
+				else 
+					*pimpl.get() = *revit.pimpl.get();				
+			}
 			return *this;
 		}
 
@@ -717,28 +717,12 @@ public:
 		const_reverse_iterator& operator=(const const_reverse_iterator& crevit)
 		{
 			if (this != &crevit)
-				*pimpl.get() = *crevit.pimpl.get();
-			return *this;
-		}
-
-		const_reverse_iterator& operator=(const reverse_iterator& revit)
-		{
-			if (this != &revit)
-				*pimpl.get() = *revit.pimpl.get();
-			return *this;
-		}
-
-		const_reverse_iterator& operator=(const const_iterator& cit)
-		{
-			if (this != &cit)
-				*pimpl.get() = *cit.pimpl.get();
-			return *this;
-		}
-
-		const_reverse_iterator& operator=(const iterator& it)
-		{
-			if (this != &it)
-				*pimpl.get() = *it.pimpl.get();
+			{
+				if (!pimpl)
+					pimpl = std::make_unique<iterator_impl>(*crevit.pimpl);
+				else
+					*pimpl.get() = *crevit.pimpl.get();
+			}
 			return *this;
 		}
 
