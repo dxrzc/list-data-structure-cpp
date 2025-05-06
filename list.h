@@ -507,12 +507,12 @@ public:
 		bool operator==(const iterator& it) const noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }
 	};
 
-	[[nodiscard]] iterator begin() noexcept
+	[[nodiscard]] iterator begin() 
 	{
 		return head.next;
 	}
 
-	[[nodiscard]] iterator end() noexcept
+	[[nodiscard]] iterator end()
 	{
 		return &head;
 	}
@@ -627,7 +627,7 @@ public:
 		using reference = T&;
 
 		reverse_iterator() : pimpl(nullptr) {}
-		reverse_iterator(const link* linker) :pimpl(std::make_unique<iterator_impl>(const_cast<link*>(linker))) {}
+		reverse_iterator(link* linker) :pimpl(std::make_unique<iterator_impl>(const_cast<link*>(linker))) {}
 		reverse_iterator(const iterator& it) :pimpl(std::make_unique<iterator_impl>(*(it.pimpl.get()))) {}
 		reverse_iterator(const reverse_iterator& revit) : pimpl(std::make_unique<iterator_impl>(*(revit.pimpl.get()))) {}
 
@@ -679,12 +679,12 @@ public:
 		bool operator==(const const_iterator& cit) const noexcept { return  *(pimpl.get()) == *(cit.pimpl.get()); }
 	};
 
-	[[nodiscard]] reverse_iterator rbegin() const
+	[[nodiscard]] reverse_iterator rbegin()
 	{
 		return head.previous;
 	}
 
-	[[nodiscard]] reverse_iterator rend() const
+	[[nodiscard]] reverse_iterator rend() 
 	{
 		return &head;
 	}
