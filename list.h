@@ -537,7 +537,9 @@ public:
 
 		const_iterator() : pimpl(nullptr) {}
 		const_iterator(const link* linker) :pimpl(std::make_unique<iterator_impl>(const_cast<link*>(linker))) {}
-		const_iterator(const const_iterator& cit) : pimpl(std::make_unique<iterator_impl>(*(cit.pimpl.get()))) {}
+		const_iterator(const const_iterator& cit) : pimpl(std::make_unique<iterator_impl>(*(cit.pimpl.get()))) {}		
+		const_iterator(const reverse_iterator& revit) : pimpl(std::make_unique<iterator_impl>(*(revit.pimpl.get()))) {}
+		const_iterator(const const_reverse_iterator& crevit) : pimpl(std::make_unique<iterator_impl>(*(crevit.pimpl.get()))) {}
 		const_iterator(const iterator& it) :pimpl(std::make_unique<iterator_impl>(*(it.pimpl.get()))) {}
 
 		const_iterator& operator=(const const_iterator& cit)
@@ -583,8 +585,7 @@ public:
 			return pimpl.get()->get_value();
 		}
 
-		bool operator==(const const_iterator cit) const noexcept { return *(pimpl.get()) == *(cit.pimpl.get()); }
-		bool operator==(const iterator& it) const noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }
+		bool operator==(const const_iterator cit) const noexcept { return *(pimpl.get()) == *(cit.pimpl.get()); }		
 	};
 
 	[[nodiscard]] const_iterator cbegin() const
@@ -687,7 +688,6 @@ public:
 	{
 		return &head;
 	}
-
 
 	class const_reverse_iterator
 	{

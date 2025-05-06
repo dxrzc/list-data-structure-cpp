@@ -78,7 +78,7 @@ TEST(iterator, equality_operator_works_with_const_reverse_iterator)
     EXPECT_TRUE(it == cit);
 }
 
-TEST(iterator, equal_operator_works_with_another_iterator)
+TEST(iterator, assigment_operator_works_with_another_iterator)
 {
     intlist list{ 1,2,3,4,5 };
 
@@ -92,7 +92,7 @@ TEST(iterator, equal_operator_works_with_another_iterator)
     EXPECT_EQ(*it, *another_iterator);
 }
 
-TEST(iterator, equal_operator_works_with_reverse_iterator)
+TEST(iterator, assigment_operator_works_with_reverse_iterator)
 {
     intlist list{ 1,2,3,4,5 };
 
@@ -103,6 +103,16 @@ TEST(iterator, equal_operator_works_with_reverse_iterator)
     it = revit;
 
     EXPECT_EQ(*it, *revit);
+}
+
+TEST(iterator, assigment_operator_no_fatal_failure_if_pimpl_is_null)
+{
+    intlist list{ 1,2,3,4,5 };
+
+    intlist::iterator another_it = list.begin();
+    intlist::iterator it; // null pimpl;
+
+    EXPECT_NO_FATAL_FAILURE(it = another_it);
 }
 
 TEST(iterator, should_throw_exception_if_tries_to_get_head_value)
