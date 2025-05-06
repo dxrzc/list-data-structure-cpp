@@ -225,6 +225,8 @@ public:
 
 	class iterator;
 	class const_iterator;
+	class reverse_iterator;
+	class const_reverse_iterator;
 
 	template<class NoReverseIT>
 		requires std::same_as<NoReverseIT, iterator> || std::same_as<NoReverseIT, const_iterator>
@@ -456,8 +458,8 @@ public:
 
 		iterator() : pimpl(nullptr) {}
 		iterator(link* linker) : pimpl(std::make_unique<iterator_impl>(linker)) {}
-		iterator(const iterator& it) : pimpl(std::make_unique<iterator_impl>(*(it.pimpl.get()))) {}
-		// TODO: other conversions.		
+		iterator(const iterator& it) : pimpl(std::make_unique<iterator_impl>(*it.pimpl.get())) {}
+		iterator(const reverse_iterator& revit) : pimpl(std::make_unique<iterator_impl>(*revit.pimpl.get())) {}		
 
 		iterator& operator=(const iterator& it)
 		{
@@ -935,7 +937,7 @@ public:
 	}
 
 	/**
-	* @brief Finds the first occurrence of an element with the specified value in the list.	
+	* @brief Finds the first occurrence of an element with the specified value in the list.
 	* @param value The value to search for within the list.
 	* @return iterator An iterator to the first node containing the specified value,
 	* or an iterator to the end of the list if the value is not found.
@@ -963,7 +965,7 @@ public:
 	* @param value The value to search for within the list.
 	* @return bool `true` if the value is found in the list; `false` otherwise.
 	*/
-	bool contains(const T& value) const 
+	bool contains(const T& value) const
 	{
 		link* current_cell = head.next;
 
@@ -977,7 +979,7 @@ public:
 
 		return false;
 	}
-	
+
 	void reverse()
 	{
 		link* first_node = head.next;
