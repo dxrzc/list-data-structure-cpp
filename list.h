@@ -567,22 +567,22 @@ public:
 		bool operator==(const iterator& it) const noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }
 	};
 
-	[[nodiscard]] const_iterator cbegin() const noexcept
+	[[nodiscard]] const_iterator cbegin() const
 	{
 		return head.next;
 	}
 
-	[[nodiscard]] const_iterator cend() const noexcept
+	[[nodiscard]] const_iterator cend() const
 	{
 		return &head;
 	}
 
-	[[nodiscard]] const_iterator begin() const noexcept
+	[[nodiscard]] const_iterator begin() const
 	{
 		return head.next;
 	}
 
-	[[nodiscard]] const_iterator end() const noexcept
+	[[nodiscard]] const_iterator end() const
 	{
 		return &head;
 	}
@@ -656,12 +656,12 @@ public:
 		bool operator==(const const_iterator& cit) const noexcept { return  *(pimpl.get()) == *(cit.pimpl.get()); }
 	};
 
-	[[nodiscard]] reverse_iterator rbegin() const noexcept
+	[[nodiscard]] reverse_iterator rbegin() const
 	{
 		return head.previous;
 	}
 
-	[[nodiscard]] reverse_iterator rend() const noexcept
+	[[nodiscard]] reverse_iterator rend() const
 	{
 		return &head;
 	}
@@ -752,12 +752,12 @@ public:
 		bool operator==(const const_iterator& cit) const noexcept { return  *(pimpl.get()) == *(cit.pimpl.get()); }
 	};
 
-	[[nodiscard]] const_reverse_iterator crbegin() const noexcept
+	[[nodiscard]] const_reverse_iterator crbegin() const
 	{
 		return head.previous;
 	}
 
-	[[nodiscard]] const_reverse_iterator crend() const noexcept
+	[[nodiscard]] const_reverse_iterator crend() const
 	{
 		return &head;
 	}
