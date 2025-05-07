@@ -41,7 +41,8 @@ cd Debug
 
 ## Usage
 Copy the list.h file into your project and include it. For example:
-```
+
+```cpp
 #include "list.h"
 
 class Resource
