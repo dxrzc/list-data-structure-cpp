@@ -5,15 +5,10 @@ project(testing)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
-file(GLOB SOURCES 
-"testing/constructors/*.cpp"
-"testing/helpers/*.cpp"
-"testing/iterators/*.cpp"
-"testing/methods/*.cpp"
-)
+file(GLOB_RECURSE TEST_SOURCES "testing/**/*.cpp")
 
 add_executable(testing
-	${SOURCES}
+	${TEST_SOURCES}
 )
 
 target_include_directories(
