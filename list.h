@@ -18,6 +18,7 @@ private:
 	struct node;
 
 public:
+	class iterator_impl;
 	class iterator;
 	class const_iterator;
 	class reverse_iterator;
