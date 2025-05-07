@@ -10,18 +10,33 @@ concept IteratorLike = std::same_as<It, typename List::iterator>
 || std::same_as<It, typename List::reverse_iterator>
 || std::same_as<It, typename List::const_reverse_iterator>;
 
-// doubly linked list with header
 template<class T>
 class list
 {
 private:
-	// allows to create a cell with a type that does not have a default constructor
+	struct link;
+	struct node;
+
+public:
+	class iterator;
+	class const_iterator;
+	class reverse_iterator;
+	class const_reverse_iterator;
+
+private:
+	link head;
+	std::size_t nelms;
+
+	// Allows to create the head cell if the type "T" does not have a default constructor	
 	struct link
 	{
 		link* previous;
 		link* next;
+
 		link() : previous(nullptr), next(nullptr) {}
-		link(link* prev, link* nxt) : previous(prev), next(nxt) {}
+
+		link(link* prev, link* nxt)
+			: previous(prev), next(nxt) {}
 
 		link(const link& link)
 		{
@@ -45,29 +60,30 @@ private:
 	struct node : public link
 	{
 		T value;
-		node(const T& value_, link* prev, link* nxt)
-			: value(value_), link(prev, nxt) {}
 
 		node() = delete;
+
+		node(const T& value_, link* prev, link* nxt)
+			: value(value_), link(prev, nxt) {}
 
 		template<typename... Args>
 		node(link* prev, link* nxt, Args&&...args)
 			: link(prev, nxt), value(std::forward<Args>(args)...) {}
 	};
 
-	link head;
-	std::size_t nelms;
-
 	void deep_copy(const list& list)
 	{
-		link* aux = list.head.next;
-		while (aux != &list.head)
+		link* cell = list.head.next;
+
+		while (cell != &list.head)
 		{
-			node* next = dynamic_cast<node*>(aux);
-			if (!next)
-				throw std::logic_error("unable to casting to node");
-			push_back(next->value);
-			aux = aux->next;
+			node* full_cell = dynamic_cast<node*>(cell);
+
+			if (!full_cell)
+				throw std::logic_error("Unable to casting to node");
+
+			push_back(full_cell->value);
+			cell = cell->next;
 		}
 	}
 
@@ -101,8 +117,10 @@ private:
 		T& get_value()
 		{
 			node* node_ptr = dynamic_cast<node*>(linker);
+
 			if (!node_ptr)
 				throw std::runtime_error("Invalid pointer: Cannot dereference non-node object.");
+
 			return node_ptr->value;
 		}
 
@@ -222,15 +240,9 @@ private:
 	}
 
 public:
-
-	class iterator;
-	class const_iterator;
-	class reverse_iterator;
-	class const_reverse_iterator;
-
-	template<class NoReverseIT>
-		requires std::same_as<NoReverseIT, iterator> || std::same_as<NoReverseIT, const_iterator>
-	list(NoReverseIT begin, NoReverseIT end) : list()
+	template<class NoReverseIt>
+		requires std::same_as<NoReverseIt, iterator> || std::same_as<NoReverseIt, const_iterator>
+	list(NoReverseIt begin, NoReverseIt end) : list()
 	{
 		while (begin != end)
 		{
@@ -459,7 +471,7 @@ public:
 		iterator() : pimpl(nullptr) {}
 		iterator(link* linker) : pimpl(std::make_unique<iterator_impl>(linker)) {}
 		iterator(const iterator& it) : pimpl(std::make_unique<iterator_impl>(*it.pimpl.get())) {}
-		iterator(const reverse_iterator& revit) : pimpl(std::make_unique<iterator_impl>(*revit.pimpl.get())) {}		
+		iterator(const reverse_iterator& revit) : pimpl(std::make_unique<iterator_impl>(*revit.pimpl.get())) {}
 
 		iterator& operator=(const iterator& it)
 		{
@@ -507,7 +519,7 @@ public:
 		bool operator==(const iterator& it) const noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }
 	};
 
-	[[nodiscard]] iterator begin() 
+	[[nodiscard]] iterator begin()
 	{
 		return head.next;
 	}
@@ -537,7 +549,7 @@ public:
 
 		const_iterator() : pimpl(nullptr) {}
 		const_iterator(const link* linker) :pimpl(std::make_unique<iterator_impl>(const_cast<link*>(linker))) {}
-		const_iterator(const const_iterator& cit) : pimpl(std::make_unique<iterator_impl>(*(cit.pimpl.get()))) {}		
+		const_iterator(const const_iterator& cit) : pimpl(std::make_unique<iterator_impl>(*(cit.pimpl.get()))) {}
 		const_iterator(const reverse_iterator& revit) : pimpl(std::make_unique<iterator_impl>(*(revit.pimpl.get()))) {}
 		const_iterator(const const_reverse_iterator& crevit) : pimpl(std::make_unique<iterator_impl>(*(crevit.pimpl.get()))) {}
 		const_iterator(const iterator& it) :pimpl(std::make_unique<iterator_impl>(*(it.pimpl.get()))) {}
@@ -585,7 +597,7 @@ public:
 			return pimpl.get()->get_value();
 		}
 
-		bool operator==(const const_iterator& cit) const noexcept { return *(pimpl.get()) == *(cit.pimpl.get()); }		
+		bool operator==(const const_iterator& cit) const noexcept { return *(pimpl.get()) == *(cit.pimpl.get()); }
 	};
 
 	[[nodiscard]] const_iterator cbegin() const
@@ -637,8 +649,8 @@ public:
 			{
 				if (!pimpl)
 					pimpl = std::make_unique<iterator_impl>(*revit.pimpl);
-				else 
-					*pimpl.get() = *revit.pimpl.get();				
+				else
+					*pimpl.get() = *revit.pimpl.get();
 			}
 			return *this;
 		}
@@ -684,7 +696,7 @@ public:
 		return head.previous;
 	}
 
-	[[nodiscard]] reverse_iterator rend() 
+	[[nodiscard]] reverse_iterator rend()
 	{
 		return &head;
 	}
@@ -826,19 +838,21 @@ public:
 	template<class Condition>
 	std::size_t remove_if(Condition condition)
 	{
-		std::size_t totalRemoved = 0;
+		std::size_t total_removed = 0;
 		auto it = cbegin();
 
 		while (it != cend())
+		{
 			if (condition(*it))
 			{
 				it = pop(it);
-				++totalRemoved;
+				++total_removed;
 			}
 			else
 				++it;
+		}
 
-		return totalRemoved;
+		return total_removed;
 	}
 
 	/*
@@ -953,7 +967,7 @@ public:
 	{
 		link* current_cell = head.next;
 
-		while (current_cell!=&head)
+		while (current_cell != &head)
 		{
 			if (static_cast<node*>(current_cell)->value == value)
 				return true;
@@ -971,7 +985,7 @@ public:
 		while (first_node != &head)
 		{
 			link* previous = first_node->previous;
-			first_node->previous= first_node->next;
+			first_node->previous = first_node->next;
 			first_node->next = previous;
 			// the next one is now the "previous"
 			first_node = first_node->previous;
