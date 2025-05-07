@@ -16,9 +16,9 @@ class list
 private:
 	struct link;
 	struct node;
+	class iterator_impl;	
 
 public:
-	class iterator_impl;
 	class iterator;
 	class const_iterator;
 	class reverse_iterator;
