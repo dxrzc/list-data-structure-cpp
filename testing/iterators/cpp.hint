@@ -4,3 +4,5 @@
 #define ASSERT_INTEROP(From, To) static_assert(std::is_assignable_v<From, To>); static_assert(std::is_constructible_v<From, To>); static_assert(std::is_convertible_v<To, From>);
 #define ASSERT_NO_INTEROP(From, To) static_assert(!std::is_assignable_v<From, To>); static_assert(!std::is_constructible_v<From, To>); static_assert(!std::is_convertible_v<To, From>);
 #define TYPED_TEST_SUITE(TestFixture, Types, TestNameGenerator)
+#define ASSERT_DEREFERENCE_RETURNS_CONST_REFERENCE(It) static_assert(dereference_returns_const_reference<It>::value);
+#define ASSERT_DEREFERENCE_RETURNS_NONCONST_REFERENCE(It) static_assert(dereference_returns_nonconst_reference<It>::value);

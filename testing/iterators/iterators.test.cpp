@@ -1,7 +1,14 @@
 #include <type_traits>
 #include "macros/INTEROP.MACRO.H"
+#include "macros/DEREFERENCE.MACRO.H"
 #include "iterators_test_traits.h"
 #include "iterators_test.fixture.h"
+
+ASSERT_DEREFERENCE_RETURNS_CONST_REFERENCE(intlist::const_iterator);
+ASSERT_DEREFERENCE_RETURNS_CONST_REFERENCE(intlist::const_reverse_iterator);
+
+ASSERT_DEREFERENCE_RETURNS_NONCONST_REFERENCE(intlist::iterator);
+ASSERT_DEREFERENCE_RETURNS_NONCONST_REFERENCE(intlist::reverse_iterator);
 
 ASSERT_INTEROP(intlist::iterator, intlist::reverse_iterator);
 ASSERT_NO_INTEROP(intlist::iterator, intlist::const_reverse_iterator);

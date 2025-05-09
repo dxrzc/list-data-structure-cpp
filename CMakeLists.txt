@@ -16,6 +16,7 @@ target_include_directories(
 	PRIVATE 
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}/testing/helpers
+	${CMAKE_CURRENT_SOURCE_DIR}/testing/iterators/setup/include
 )
 
 include(FetchContent)
