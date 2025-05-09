@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../helpers/intlist.typealias.helper.h"
+#include "intlist.typealias.helper.h"
 
 TEST(empty, should_return_false_if_list_not_empty)
 {
