@@ -24,7 +24,7 @@ TYPED_TEST(iterators_test_fixture, constructor_no_fatal_failure_if_rhs_iterator_
 
 TYPED_TEST(iterators_test_fixture, assigment_operator_no_fatal_failure_if_rhs_iterator_is_not_initialized)
 {
-	TypeParam it = IteratorsTestTraits<TypeParam>::begin(this->test_list);
+	TypeParam it = iterators_test_traits<TypeParam>::begin(this->test_list);
 	TypeParam uninitialized_iterator{};
 
 	EXPECT_NO_FATAL_FAILURE(it = uninitialized_iterator);
@@ -32,7 +32,7 @@ TYPED_TEST(iterators_test_fixture, assigment_operator_no_fatal_failure_if_rhs_it
 
 TYPED_TEST(iterators_test_fixture, assigment_operator_no_fatal_failure_if_lhs_iterator_is_not_initialized)
 {
-	TypeParam it = IteratorsTestTraits<TypeParam>::begin(this->test_list);
+	TypeParam it = iterators_test_traits<TypeParam>::begin(this->test_list);
 	TypeParam uninitialized_iterator{};
 
 	EXPECT_NO_FATAL_FAILURE(uninitialized_iterator = it);
@@ -40,22 +40,22 @@ TYPED_TEST(iterators_test_fixture, assigment_operator_no_fatal_failure_if_lhs_it
 
 TYPED_TEST(iterators_test_fixture, dereference_operator)
 {
-	TypeParam it = IteratorsTestTraits<TypeParam>::begin(this->test_list);
-	auto begin_value = IteratorsTestTraits<TypeParam>::values().at(0);
+	TypeParam it = iterators_test_traits<TypeParam>::begin(this->test_list);
+	auto begin_value = iterators_test_traits<TypeParam>::values().at(0);
 
 	EXPECT_EQ(*it, begin_value);
 }
 
 TYPED_TEST(iterators_test_fixture, dereferencing_the_head_node_throws_a_runtime_error)
 {
-	TypeParam it = IteratorsTestTraits<TypeParam>::end(this->test_list);
+	TypeParam it = iterators_test_traits<TypeParam>::end(this->test_list);
 	EXPECT_THROW(*it, std::runtime_error);
 }
 
 TYPED_TEST(iterators_test_fixture, pre_increment_operator)
 {
-	const int expected_final_pointed_value = IteratorsTestTraits<TypeParam>::values().at(1);
-	TypeParam it = IteratorsTestTraits<TypeParam>::begin(this->test_list);
+	const int expected_final_pointed_value = iterators_test_traits<TypeParam>::values().at(1);
+	TypeParam it = iterators_test_traits<TypeParam>::begin(this->test_list);
 
 	++it;
 
@@ -64,8 +64,8 @@ TYPED_TEST(iterators_test_fixture, pre_increment_operator)
 
 TYPED_TEST(iterators_test_fixture, post_increment_operator)
 {
-	const int expected_final_pointed_value = IteratorsTestTraits<TypeParam>::values().at(1);
-	TypeParam it = IteratorsTestTraits<TypeParam>::begin(this->test_list);
+	const int expected_final_pointed_value = iterators_test_traits<TypeParam>::values().at(1);
+	TypeParam it = iterators_test_traits<TypeParam>::begin(this->test_list);
 
 	it++;
 
@@ -74,10 +74,10 @@ TYPED_TEST(iterators_test_fixture, post_increment_operator)
 
 TYPED_TEST(iterators_test_fixture, pre_decrement_operator)
 {
-	const int expected_final_pointed_value = IteratorsTestTraits<TypeParam>::values()
-		.at(IteratorsTestTraits<TypeParam>::values().size() - 1);
+	const int expected_final_pointed_value = iterators_test_traits<TypeParam>::values()
+		.at(iterators_test_traits<TypeParam>::values().size() - 1);
 
-	TypeParam it = IteratorsTestTraits<TypeParam>::end(this->test_list);
+	TypeParam it = iterators_test_traits<TypeParam>::end(this->test_list);
 
 	--it;
 
@@ -86,10 +86,10 @@ TYPED_TEST(iterators_test_fixture, pre_decrement_operator)
 
 TYPED_TEST(iterators_test_fixture, post_decrement_operator)
 {
-	const int expected_final_pointed_value = IteratorsTestTraits<TypeParam>::values()
-		.at(IteratorsTestTraits<TypeParam>::values().size() - 1);
+	const int expected_final_pointed_value = iterators_test_traits<TypeParam>::values()
+		.at(iterators_test_traits<TypeParam>::values().size() - 1);
 
-	TypeParam it = IteratorsTestTraits<TypeParam>::end(this->test_list);
+	TypeParam it = iterators_test_traits<TypeParam>::end(this->test_list);
 
 	it--;
 
@@ -98,10 +98,10 @@ TYPED_TEST(iterators_test_fixture, post_decrement_operator)
 
 TYPED_TEST(iterators_test_fixture, equality_operator_returns_true_if_iterators_point_to_the_same_node)
 {
-	TypeParam it = IteratorsTestTraits<TypeParam>::begin(this->test_list);
+	TypeParam it = iterators_test_traits<TypeParam>::begin(this->test_list);
 	std::advance(it, 1);
 
-	TypeParam it2 = IteratorsTestTraits<TypeParam>::begin(this->test_list);
+	TypeParam it2 = iterators_test_traits<TypeParam>::begin(this->test_list);
 	std::advance(it2, 1);
 
 	EXPECT_TRUE(it == it2);
@@ -112,8 +112,8 @@ TYPED_TEST(iterators_test_fixture, equality_operator_returns_false_if_iterators_
 {
 	this->test_list = intlist{ 1,1,1,1,1 };
 
-	TypeParam it = IteratorsTestTraits<TypeParam>::begin(this->test_list);
-	TypeParam it2 = IteratorsTestTraits<TypeParam>::begin(this->test_list);
+	TypeParam it = iterators_test_traits<TypeParam>::begin(this->test_list);
+	TypeParam it2 = iterators_test_traits<TypeParam>::begin(this->test_list);
 
 	std::advance(it2, 1);
 
@@ -122,12 +122,12 @@ TYPED_TEST(iterators_test_fixture, equality_operator_returns_false_if_iterators_
 
 TYPED_TEST(iterators_test_fixture, begin_should_return_iterator_to_begin_of_the_list)
 {
-	TypeParam it = IteratorsTestTraits<TypeParam>::begin(this->test_list);
-	EXPECT_EQ(*it, IteratorsTestTraits<TypeParam>::values().at(0));
+	TypeParam it = iterators_test_traits<TypeParam>::begin(this->test_list);
+	EXPECT_EQ(*it, iterators_test_traits<TypeParam>::values().at(0));
 }
 
 TYPED_TEST(iterators_test_fixture, end_should_return_iterator_to_head)
 {
-	TypeParam it = IteratorsTestTraits<TypeParam>::end(this->test_list);
+	TypeParam it = iterators_test_traits<TypeParam>::end(this->test_list);
 	EXPECT_ANY_THROW(*it); // throws exception when dereferecing head
 }
