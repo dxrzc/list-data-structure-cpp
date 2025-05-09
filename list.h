@@ -16,7 +16,8 @@ class list
 private:
 	struct link;
 	struct node;
-	class iterator_impl;	
+	class iterator_impl;
+	class iterator_base;
 
 public:
 	class iterator;
@@ -131,6 +132,49 @@ private:
 		}
 
 		bool operator==(const iterator_impl& itImpl) const noexcept { return linker == itImpl.linker; }
+	};
+
+	class iterator_base
+	{
+	protected:
+		std::unique_ptr<iterator_impl> pimpl;
+
+	private:
+		link* get_internal_linker() const noexcept
+		{
+			return pimpl.get()->get_linker();
+		}
+
+	public:
+		iterator_base() = default;
+		iterator_base(link* linker) : pimpl(std::make_unique<iterator_impl>(linker)) {}
+		iterator_base(const iterator_base& other) : pimpl(other.pimpl ? std::make_unique<iterator_impl>(*other.pimpl) : nullptr) {}
+		virtual ~iterator_base() {}
+
+		iterator_base& operator=(const iterator_base& other) {
+			if (this != &other)
+			{
+				if (!other.pimpl)
+					pimpl.reset();
+				else if (!pimpl)
+					pimpl = std::make_unique<iterator_impl>(*other.pimpl);
+				else
+					*pimpl = *other.pimpl;
+			}
+			return *this;
+		}
+
+		bool operator==(const iterator_base& other) const noexcept
+		{
+			return *pimpl == *other.pimpl;
+		}
+
+		T& operator*()
+		{
+			return pimpl.get()->get_value();
+		}
+
+		friend class list;
 	};
 
 	// internal function to pop an element using an iterator
@@ -451,73 +495,45 @@ public:
 		head.previous = &head;
 	}
 
-	class iterator
+	class iterator : public iterator_base
 	{
-	private:
-		std::unique_ptr<iterator_impl> pimpl;
-
-		link* get_internal_linker() const noexcept
-		{
-			return pimpl.get()->get_linker();
-		}
-
 	public:
-		friend class list;
 		using iterator_category = std::bidirectional_iterator_tag;
 		using value_type = T;
 		using difference_type = std::ptrdiff_t;
 		using pointer = T*;
 		using reference = T&;
 
-		iterator() : pimpl(nullptr) {}
-		iterator(link* linker) : pimpl(std::make_unique<iterator_impl>(linker)) {}
-		iterator(const iterator& it) : pimpl(std::make_unique<iterator_impl>(*it.pimpl.get())) {}
-		iterator(const reverse_iterator& revit) : pimpl(std::make_unique<iterator_impl>(*revit.pimpl.get())) {}
-
-		iterator& operator=(const iterator& it)
-		{
-			if (this != &it)
-			{
-				if (!pimpl)
-					pimpl = std::make_unique<iterator_impl>(*it.pimpl);
-				else
-					*pimpl.get() = *it.pimpl.get();
-			}
-			return *this;
-		}
+		iterator() = default;
+		iterator(link* l) : iterator_base(l) {}
+		iterator(const iterator& it) : iterator_base(it) {}
+		iterator(const reverse_iterator& revit) : iterator_base(revit) {}
 
 		iterator& operator++()
 		{
-			pimpl.get()->advance();
+			iterator_base::pimpl.get()->advance();
 			return *this;
 		}
 
 		iterator operator++(int)
 		{
 			auto aux = *this;
-			pimpl.get()->advance();
+			iterator_base::pimpl.get()->advance();
 			return aux;
 		}
 
 		iterator& operator--()
 		{
-			pimpl.get()->go_back();
+			iterator_base::pimpl.get()->go_back();
 			return *this;
 		}
 
 		iterator operator--(int)
 		{
 			auto aux = *this;
-			pimpl.get()->go_back();
+			iterator_base::pimpl.get()->go_back();
 			return aux;
 		}
-
-		T& operator*()
-		{
-			return pimpl.get()->get_value();
-		}
-
-		bool operator==(const iterator& it) const noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }
 	};
 
 	[[nodiscard]] iterator begin()
@@ -530,75 +546,47 @@ public:
 		return &head;
 	}
 
-	class const_iterator
+	class const_iterator : public iterator_base
 	{
-	private:
-		std::unique_ptr<iterator_impl> pimpl;
-
-		link* get_internal_linker() const noexcept
-		{
-			return pimpl.get()->get_linker();
-		}
-
-	public:
-		friend class list;
+	public:		
 		using iterator_category = std::bidirectional_iterator_tag;
 		using value_type = T;
 		using difference_type = std::ptrdiff_t;
 		using pointer = const T*;
 		using reference = const T&;
 
-		const_iterator() : pimpl(nullptr) {}
-		const_iterator(const link* linker) :pimpl(std::make_unique<iterator_impl>(const_cast<link*>(linker))) {}
-		const_iterator(const const_iterator& cit) : pimpl(std::make_unique<iterator_impl>(*(cit.pimpl.get()))) {}
-		const_iterator(const reverse_iterator& revit) : pimpl(std::make_unique<iterator_impl>(*(revit.pimpl.get()))) {}
-		const_iterator(const const_reverse_iterator& crevit) : pimpl(std::make_unique<iterator_impl>(*(crevit.pimpl.get()))) {}
-		const_iterator(const iterator& it) :pimpl(std::make_unique<iterator_impl>(*(it.pimpl.get()))) {}
-
-		const_iterator& operator=(const const_iterator& cit)
-		{
-			if (this != &cit)
-			{
-				if (!pimpl)
-					pimpl = std::make_unique<iterator_impl>(*cit.pimpl);
-				else
-					*pimpl.get() = *cit.pimpl.get();
-			}
-			return *this;
-		}
+		const_iterator() = default;
+		const_iterator(link* l) : iterator_base(l) {}
+		const_iterator(const const_iterator& cit) : iterator_base(cit) {}
+		const_iterator(const reverse_iterator& revit) : iterator_base(revit) {}
+		const_iterator(const const_reverse_iterator& crevit) : iterator_base(crevit) {}
+		const_iterator(const iterator& it) : iterator_base(it) {}
 
 		const_iterator& operator++()
 		{
-			pimpl.get()->advance();
+			iterator_base::pimpl.get()->advance();
 			return *this;
 		}
 
 		const_iterator operator++(int)
 		{
 			auto aux = *this;
-			pimpl.get()->advance();
+			iterator_base::pimpl.get()->advance();
 			return aux;
 		}
 
 		const_iterator& operator--()
 		{
-			pimpl.get()->go_back();
+			iterator_base::pimpl.get()->go_back();
 			return *this;
 		}
 
 		const_iterator operator--(int)
 		{
 			auto aux = *this;
-			pimpl.get()->go_back();
+			iterator_base::pimpl.get()->go_back();
 			return aux;
 		}
-
-		const T& operator*() const
-		{
-			return pimpl.get()->get_value();
-		}
-
-		bool operator==(const const_iterator& cit) const noexcept { return *(pimpl.get()) == *(cit.pimpl.get()); }
 	};
 
 	[[nodiscard]] const_iterator cbegin() const
@@ -608,7 +596,7 @@ public:
 
 	[[nodiscard]] const_iterator cend() const
 	{
-		return &head;
+		return const_cast<link*>(&head);
 	}
 
 	[[nodiscard]] const_iterator begin() const
@@ -618,78 +606,48 @@ public:
 
 	[[nodiscard]] const_iterator end() const
 	{
-		return &head;
+		return const_cast<link*>(&head);
 	}
 
-	class reverse_iterator
+	class reverse_iterator: public iterator_base
 	{
-	private:
-		std::unique_ptr<iterator_impl> pimpl;
-
-		link* get_internal_linker() const noexcept
-		{
-			return pimpl.get()->get_linker();
-		}
-
-	public:
-		friend class list;
+	public:		
 		using iterator_category = std::bidirectional_iterator_tag;
 		using value_type = T;
 		using difference_type = std::ptrdiff_t;
 		using pointer = T*;
 		using reference = T&;
 
-		reverse_iterator() : pimpl(nullptr) {}
-		reverse_iterator(link* linker) :pimpl(std::make_unique<iterator_impl>(const_cast<link*>(linker))) {}
-		reverse_iterator(const iterator& it) :pimpl(std::make_unique<iterator_impl>(*(it.pimpl.get()))) {}
-		reverse_iterator(const reverse_iterator& revit) : pimpl(std::make_unique<iterator_impl>(*(revit.pimpl.get()))) {}
-
-		reverse_iterator& operator=(const reverse_iterator& revit)
-		{
-			if (this != &revit)
-			{
-				if (!pimpl)
-					pimpl = std::make_unique<iterator_impl>(*revit.pimpl);
-				else
-					*pimpl.get() = *revit.pimpl.get();
-			}
-			return *this;
-		}
+		reverse_iterator() = default;
+		reverse_iterator(link* l) : iterator_base(l) {}
+		reverse_iterator(const iterator& it) : iterator_base(it) {}
+		reverse_iterator(const reverse_iterator& revit) : iterator_base(revit) {}
 
 		reverse_iterator& operator++()
 		{
-			pimpl.get()->go_back();
+			iterator_base::pimpl.get()->go_back();
 			return *this;
 		}
 
 		reverse_iterator operator++(int)
 		{
 			auto aux = *this;
-			pimpl.get()->go_back();
+			iterator_base::pimpl.get()->go_back();
 			return aux;
 		}
 
 		reverse_iterator& operator--()
 		{
-			pimpl.get()->advance();
+			iterator_base::pimpl.get()->advance();
 			return *this;
 		}
 
 		reverse_iterator operator--(int)
 		{
 			auto aux = *this;
-			pimpl.get()->advance();
+			iterator_base::pimpl.get()->advance();
 			return aux;
 		}
-
-		T& operator*() const
-		{
-			return pimpl.get()->get_value();
-		}
-
-		bool operator==(const reverse_iterator& revit) const noexcept { return *(pimpl.get()) == *(revit.pimpl.get()); }
-		bool operator==(const iterator& it) const noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }
-		bool operator==(const const_iterator& cit) const noexcept { return  *(pimpl.get()) == *(cit.pimpl.get()); }
 	};
 
 	[[nodiscard]] reverse_iterator rbegin()
@@ -702,78 +660,47 @@ public:
 		return &head;
 	}
 
-	class const_reverse_iterator
+	class const_reverse_iterator: public iterator_base
 	{
-	private:
-		std::unique_ptr<iterator_impl> pimpl;
-
-		link* get_internal_linker() const noexcept
-		{
-			return pimpl.get()->get_linker();
-		}
-
-	public:
-		friend class list;
+	public:		
 		using iterator_category = std::bidirectional_iterator_tag;
 		using value_type = T;
 		using difference_type = std::ptrdiff_t;
 		using pointer = const T*;
 		using reference = const T&;
 
-		const_reverse_iterator() : pimpl(nullptr) {}
-		const_reverse_iterator(const link* linker) :pimpl(std::make_unique<iterator_impl>(const_cast<link*>(linker))) {}
-		const_reverse_iterator(const iterator& it) :pimpl(std::make_unique<iterator_impl>(*(it.pimpl.get()))) {}
-		const_reverse_iterator(const const_iterator& cit) :pimpl(std::make_unique<iterator_impl>(*(cit.pimpl.get()))) {}
-		const_reverse_iterator(const reverse_iterator& revit) : pimpl(std::make_unique<iterator_impl>(*(revit.pimpl.get()))) {}
-		const_reverse_iterator(const const_reverse_iterator& crevit) : pimpl(std::make_unique<iterator_impl>(*(crevit.pimpl.get()))) {}
-
-		const_reverse_iterator& operator=(const const_reverse_iterator& crevit)
-		{
-			if (this != &crevit)
-			{
-				if (!pimpl)
-					pimpl = std::make_unique<iterator_impl>(*crevit.pimpl);
-				else
-					*pimpl.get() = *crevit.pimpl.get();
-			}
-			return *this;
-		}
+		const_reverse_iterator() = default;
+		const_reverse_iterator(link* l): iterator_base(l){}
+		const_reverse_iterator(const iterator& it) : iterator_base(it) {}
+		const_reverse_iterator(const const_iterator& cit) : iterator_base(cit) {}
+		const_reverse_iterator(const reverse_iterator& revit) : iterator_base(revit) {}
+		const_reverse_iterator(const const_reverse_iterator& crevit) : iterator_base(crevit) {}
 
 		const_reverse_iterator& operator++()
 		{
-			pimpl.get()->go_back();
+			iterator_base::pimpl.get()->go_back();
 			return *this;
 		}
 
 		const_reverse_iterator operator++(int)
 		{
 			auto aux = *this;
-			pimpl.get()->go_back();
+			iterator_base::pimpl.get()->go_back();
 			return aux;
 		}
 
 		const_reverse_iterator& operator--()
 		{
-			pimpl.get()->advance();
+			iterator_base::pimpl.get()->advance();
 			return *this;
 		}
 
 		const_reverse_iterator operator--(int)
 		{
 			auto aux = *this;
-			pimpl.get()->advance();
+			iterator_base::pimpl.get()->advance();
 			return aux;
 		}
-
-		const T& operator*() const
-		{
-			return pimpl.get()->get_value();
-		}
-
-		bool operator==(const const_reverse_iterator& crevit) const noexcept { return *(pimpl.get()) == *(crevit.pimpl.get()); }
-		bool operator==(const reverse_iterator& revit) const noexcept { return *(pimpl.get()) == *(revit.pimpl.get()); }
-		bool operator==(const iterator& it) const noexcept { return *(pimpl.get()) == *(it.pimpl.get()); }
-		bool operator==(const const_iterator& cit) const noexcept { return  *(pimpl.get()) == *(cit.pimpl.get()); }
 	};
 
 	[[nodiscard]] const_reverse_iterator crbegin() const
@@ -783,7 +710,7 @@ public:
 
 	[[nodiscard]] const_reverse_iterator crend() const
 	{
-		return &head;
+		return const_cast<link*>(&head);
 	}
 
 	/*
