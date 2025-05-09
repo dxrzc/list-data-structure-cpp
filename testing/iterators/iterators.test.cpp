@@ -1,5 +1,7 @@
 #include <type_traits>
-#include "iterators.test.setup.h"
+#include "macros/INTEROP.MACRO.H"
+#include "iterators_test_traits.h"
+#include "iterators_test.fixture.h"
 
 ASSERT_INTEROP(intlist::iterator, intlist::reverse_iterator);
 ASSERT_NO_INTEROP(intlist::iterator, intlist::const_reverse_iterator);
