@@ -15,8 +15,7 @@ class list
 {
 private:
 	struct link;
-	struct node;
-	class iterator_impl;
+	struct node;	
 	class iterator_base;
 
 public:
@@ -89,22 +88,21 @@ private:
 		}
 	}
 
-	// pimpl technique
-	class iterator_impl
+	class iterator_base
 	{
 	private:
 		link* linker;
 
-	public:
-		iterator_impl(link* linker_) : linker(linker_) {}
-		iterator_impl(const iterator_impl& itImpl) : linker(itImpl.linker) {}
-
-		iterator_impl& operator=(const iterator_impl& itImpl)
+		link* get_internal_linker()
 		{
-			if (this != &itImpl)
-				linker = itImpl.linker;
-			return *this;
+			return linker;
 		}
+
+	public:
+		iterator_base() = default;
+		iterator_base(link* l) : linker(l) {}
+		iterator_base(const iterator_base& other) : linker(other.linker) {}
+		virtual ~iterator_base() = default;
 
 		void advance()
 		{
@@ -116,7 +114,19 @@ private:
 			linker = linker->previous;
 		}
 
-		T& get_value()
+		iterator_base& operator=(const iterator_base& other) 
+		{
+			if (this != &other)
+				linker = other.linker;
+			return *this;
+		}
+
+		bool operator==(const iterator_base& other) const noexcept
+		{
+			return linker == other.linker;
+		}
+
+		T& operator*()
 		{
 			node* node_ptr = dynamic_cast<node*>(linker);
 
@@ -124,54 +134,6 @@ private:
 				throw std::runtime_error("Invalid pointer: Cannot dereference non-node object.");
 
 			return node_ptr->value;
-		}
-
-		link* get_linker() const noexcept
-		{
-			return linker;
-		}
-
-		bool operator==(const iterator_impl& itImpl) const noexcept { return linker == itImpl.linker; }
-	};
-
-	class iterator_base
-	{
-	protected:
-		std::unique_ptr<iterator_impl> pimpl;
-
-	private:
-		link* get_internal_linker() const noexcept
-		{
-			return pimpl.get()->get_linker();
-		}
-
-	public:
-		iterator_base() = default;
-		iterator_base(link* linker) : pimpl(std::make_unique<iterator_impl>(linker)) {}
-		iterator_base(const iterator_base& other) : pimpl(other.pimpl ? std::make_unique<iterator_impl>(*other.pimpl) : nullptr) {}
-		virtual ~iterator_base() {}
-
-		iterator_base& operator=(const iterator_base& other) {
-			if (this != &other)
-			{
-				if (!other.pimpl)
-					pimpl.reset();
-				else if (!pimpl)
-					pimpl = std::make_unique<iterator_impl>(*other.pimpl);
-				else
-					*pimpl = *other.pimpl;
-			}
-			return *this;
-		}
-
-		bool operator==(const iterator_base& other) const noexcept
-		{
-			return *pimpl == *other.pimpl;
-		}
-
-		T& operator*()
-		{
-			return pimpl.get()->get_value();
 		}
 
 		friend class list;
@@ -511,27 +473,27 @@ public:
 
 		iterator& operator++()
 		{
-			iterator_base::pimpl.get()->advance();
+			iterator_base::advance();
 			return *this;
 		}
 
 		iterator operator++(int)
 		{
 			auto aux = *this;
-			iterator_base::pimpl.get()->advance();
+			iterator_base::advance();
 			return aux;
 		}
 
 		iterator& operator--()
 		{
-			iterator_base::pimpl.get()->go_back();
+			iterator_base::go_back();
 			return *this;
 		}
 
 		iterator operator--(int)
 		{
 			auto aux = *this;
-			iterator_base::pimpl.get()->go_back();
+			iterator_base::go_back();
 			return aux;
 		}
 	};
@@ -548,7 +510,7 @@ public:
 
 	class const_iterator : public iterator_base
 	{
-	public:		
+	public:
 		using iterator_category = std::bidirectional_iterator_tag;
 		using value_type = T;
 		using difference_type = std::ptrdiff_t;
@@ -564,27 +526,27 @@ public:
 
 		const_iterator& operator++()
 		{
-			iterator_base::pimpl.get()->advance();
+			iterator_base::advance();
 			return *this;
 		}
 
 		const_iterator operator++(int)
 		{
 			auto aux = *this;
-			iterator_base::pimpl.get()->advance();
+			iterator_base::advance();
 			return aux;
 		}
 
 		const_iterator& operator--()
 		{
-			iterator_base::pimpl.get()->go_back();
+			iterator_base::go_back();
 			return *this;
 		}
 
 		const_iterator operator--(int)
 		{
 			auto aux = *this;
-			iterator_base::pimpl.get()->go_back();
+			iterator_base::go_back();
 			return aux;
 		}
 	};
@@ -609,9 +571,9 @@ public:
 		return const_cast<link*>(&head);
 	}
 
-	class reverse_iterator: public iterator_base
+	class reverse_iterator : public iterator_base
 	{
-	public:		
+	public:
 		using iterator_category = std::bidirectional_iterator_tag;
 		using value_type = T;
 		using difference_type = std::ptrdiff_t;
@@ -625,27 +587,27 @@ public:
 
 		reverse_iterator& operator++()
 		{
-			iterator_base::pimpl.get()->go_back();
+			iterator_base::go_back();
 			return *this;
 		}
 
 		reverse_iterator operator++(int)
 		{
 			auto aux = *this;
-			iterator_base::pimpl.get()->go_back();
+			iterator_base::go_back();
 			return aux;
 		}
 
 		reverse_iterator& operator--()
 		{
-			iterator_base::pimpl.get()->advance();
+			iterator_base::advance();
 			return *this;
 		}
 
 		reverse_iterator operator--(int)
 		{
 			auto aux = *this;
-			iterator_base::pimpl.get()->advance();
+			iterator_base::advance();
 			return aux;
 		}
 	};
@@ -660,9 +622,9 @@ public:
 		return &head;
 	}
 
-	class const_reverse_iterator: public iterator_base
+	class const_reverse_iterator : public iterator_base
 	{
-	public:		
+	public:
 		using iterator_category = std::bidirectional_iterator_tag;
 		using value_type = T;
 		using difference_type = std::ptrdiff_t;
@@ -670,7 +632,7 @@ public:
 		using reference = const T&;
 
 		const_reverse_iterator() = default;
-		const_reverse_iterator(link* l): iterator_base(l){}
+		const_reverse_iterator(link* l) : iterator_base(l) {}
 		const_reverse_iterator(const iterator& it) : iterator_base(it) {}
 		const_reverse_iterator(const const_iterator& cit) : iterator_base(cit) {}
 		const_reverse_iterator(const reverse_iterator& revit) : iterator_base(revit) {}
@@ -678,27 +640,27 @@ public:
 
 		const_reverse_iterator& operator++()
 		{
-			iterator_base::pimpl.get()->go_back();
+			iterator_base::go_back();
 			return *this;
 		}
 
 		const_reverse_iterator operator++(int)
 		{
 			auto aux = *this;
-			iterator_base::pimpl.get()->go_back();
+			iterator_base::go_back();
 			return aux;
 		}
 
 		const_reverse_iterator& operator--()
 		{
-			iterator_base::pimpl.get()->advance();
+			iterator_base::advance();
 			return *this;
 		}
 
 		const_reverse_iterator operator--(int)
 		{
 			auto aux = *this;
-			iterator_base::pimpl.get()->advance();
+			iterator_base::advance();
 			return aux;
 		}
 	};
