@@ -1,0 +1,6 @@
+// Hint files help the Visual Studio IDE interpret Visual C++ identifiers
+// such as names of functions and macros.
+// For more information see https://go.microsoft.com/fwlink/?linkid=865984
+#define ASSERT_INTEROP(From, To) static_assert(std::is_assignable_v<From, To>); static_assert(std::is_constructible_v<From, To>); static_assert(std::is_convertible_v<To, From>);
+#define ASSERT_NO_INTEROP(From, To) static_assert(!std::is_assignable_v<From, To>); static_assert(!std::is_constructible_v<From, To>); static_assert(!std::is_convertible_v<To, From>);
+#define TYPED_TEST_SUITE(TestFixture, Types, TestNameGenerator)
