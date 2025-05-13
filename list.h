@@ -15,8 +15,7 @@ class list
 {
 private:
 	struct link;
-	struct node;	
-	class iterator_base;
+	struct node;
 
 public:
 	class iterator;
@@ -88,55 +87,156 @@ private:
 		}
 	}
 
-	class iterator_base
+	class iterator_core
 	{
 	private:
 		link* linker;
 
-		link* get_internal_linker()
+		link* get_internal_linker() const noexcept
 		{
 			return linker;
 		}
 
-	public:
-		iterator_base() = default;
-		iterator_base(link* l) : linker(l) {}
-		iterator_base(const iterator_base& other) : linker(other.linker) {}
-		virtual ~iterator_base() = default;
+		template<typename U>
+		static U& extract_value(link* linker)
+		{
+			node* node_ptr = dynamic_cast<node*>(linker);
+			if (!node_ptr)
+				throw std::runtime_error("Invalid pointer: Cannot dereference non-node object.");
+			return node_ptr->value;
+		}
 
-		void advance()
+	protected:
+		void go_next()
 		{
 			linker = linker->next;
 		}
 
-		void go_back()
+		void go_previous()
 		{
 			linker = linker->previous;
 		}
 
-		iterator_base& operator=(const iterator_base& other) 
+		T& get_value() 
+		{
+			return extract_value<T>(linker);
+		}
+
+		const T& get_value() const 
+		{
+			return extract_value<const T>(linker);
+		}
+
+	public:
+		using iterator_category = std::bidirectional_iterator_tag;
+		using value_type = T;
+		using difference_type = std::ptrdiff_t;
+
+		iterator_core() = default;
+		iterator_core(link* l) : linker(l) {}
+		iterator_core(const iterator_core& other) : linker(other.linker) {}
+		virtual ~iterator_core() = default;
+
+		iterator_core& operator=(const iterator_core& other)
 		{
 			if (this != &other)
 				linker = other.linker;
 			return *this;
 		}
 
-		bool operator==(const iterator_base& other) const noexcept
+		bool operator==(const iterator_core& other) const noexcept
 		{
 			return linker == other.linker;
 		}
 
-		T& operator*()
+		// TODO: use a friend function instead of this
+		friend class list;
+	};
+
+	template<typename IteratorType>
+	class forward_iterator_base : public virtual iterator_core
+	{
+	public:
+		IteratorType& operator++()
 		{
-			node* node_ptr = dynamic_cast<node*>(linker);
-
-			if (!node_ptr)
-				throw std::runtime_error("Invalid pointer: Cannot dereference non-node object.");
-
-			return node_ptr->value;
+			iterator_core::go_next();
+			return static_cast<IteratorType&>(*this);
 		}
 
-		friend class list;
+		IteratorType operator++(int)
+		{
+			auto aux = *this;
+			iterator_core::go_next();
+			return static_cast<IteratorType&>(*this);
+		}
+
+		IteratorType& operator--()
+		{
+			iterator_core::go_previous();
+			return static_cast<IteratorType&>(*this);
+		}
+
+		IteratorType operator--(int)
+		{
+			auto aux = *this;
+			iterator_core::go_previous();
+			return static_cast<IteratorType&>(*this);
+		}
+	};
+
+	template<typename IteratorType>
+	class reverse_iterator_base : public virtual iterator_core
+	{
+	public:
+		IteratorType& operator++()
+		{
+			iterator_core::go_previous();
+			return static_cast<IteratorType&>(*this);
+		}
+
+		IteratorType operator++(int)
+		{
+			auto aux = *this;
+			iterator_core::go_previous();
+			return static_cast<IteratorType&>(*this);
+		}
+
+		IteratorType& operator--()
+		{
+			iterator_core::go_next();
+			return static_cast<IteratorType&>(*this);
+		}
+
+		IteratorType operator--(int)
+		{
+			auto aux = *this;
+			iterator_core::go_next();
+			return static_cast<IteratorType&>(*this);
+		}
+	};
+
+	class const_iterator_base : public virtual iterator_core
+	{
+	public:
+		using pointer = const T*;
+		using reference = const T&;
+
+		const T& operator*() const
+		{
+			return iterator_core::get_value();
+		}
+	};
+
+	class iterator_base : public virtual iterator_core
+	{
+	public:
+		using pointer = T*;
+		using reference = T&;
+
+		T& operator*()
+		{
+			return iterator_core::get_value();
+		}
 	};
 
 	// internal function to pop an element using an iterator
@@ -457,45 +557,13 @@ public:
 		head.previous = &head;
 	}
 
-	class iterator : public iterator_base
+	class iterator : public forward_iterator_base<iterator>, public iterator_base
 	{
 	public:
-		using iterator_category = std::bidirectional_iterator_tag;
-		using value_type = T;
-		using difference_type = std::ptrdiff_t;
-		using pointer = T*;
-		using reference = T&;
-
 		iterator() = default;
-		iterator(link* l) : iterator_base(l) {}
-		iterator(const iterator& it) : iterator_base(it) {}
-		iterator(const reverse_iterator& revit) : iterator_base(revit) {}
-
-		iterator& operator++()
-		{
-			iterator_base::advance();
-			return *this;
-		}
-
-		iterator operator++(int)
-		{
-			auto aux = *this;
-			iterator_base::advance();
-			return aux;
-		}
-
-		iterator& operator--()
-		{
-			iterator_base::go_back();
-			return *this;
-		}
-
-		iterator operator--(int)
-		{
-			auto aux = *this;
-			iterator_base::go_back();
-			return aux;
-		}
+		iterator(link* l) : iterator_core(l) {}
+		iterator(const iterator& it) : iterator_core(it) {}
+		iterator(const reverse_iterator& revit) : iterator_core(revit) {}
 	};
 
 	[[nodiscard]] iterator begin()
@@ -508,47 +576,15 @@ public:
 		return &head;
 	}
 
-	class const_iterator : public iterator_base
+	class const_iterator : public forward_iterator_base<const_iterator>, public const_iterator_base
 	{
 	public:
-		using iterator_category = std::bidirectional_iterator_tag;
-		using value_type = T;
-		using difference_type = std::ptrdiff_t;
-		using pointer = const T*;
-		using reference = const T&;
-
 		const_iterator() = default;
-		const_iterator(link* l) : iterator_base(l) {}
-		const_iterator(const const_iterator& cit) : iterator_base(cit) {}
-		const_iterator(const reverse_iterator& revit) : iterator_base(revit) {}
-		const_iterator(const const_reverse_iterator& crevit) : iterator_base(crevit) {}
-		const_iterator(const iterator& it) : iterator_base(it) {}
-
-		const_iterator& operator++()
-		{
-			iterator_base::advance();
-			return *this;
-		}
-
-		const_iterator operator++(int)
-		{
-			auto aux = *this;
-			iterator_base::advance();
-			return aux;
-		}
-
-		const_iterator& operator--()
-		{
-			iterator_base::go_back();
-			return *this;
-		}
-
-		const_iterator operator--(int)
-		{
-			auto aux = *this;
-			iterator_base::go_back();
-			return aux;
-		}
+		const_iterator(link* l) : iterator_core(l) {}
+		const_iterator(const const_iterator& cit) : iterator_core(cit) {}
+		const_iterator(const reverse_iterator& revit) : iterator_core(revit) {}
+		const_iterator(const const_reverse_iterator& crevit) :iterator_core(crevit) {}
+		const_iterator(const iterator& it) :iterator_core(it) {}
 	};
 
 	[[nodiscard]] const_iterator cbegin() const
@@ -571,45 +607,13 @@ public:
 		return const_cast<link*>(&head);
 	}
 
-	class reverse_iterator : public iterator_base
+	class reverse_iterator : public reverse_iterator_base<reverse_iterator>, public iterator_base
 	{
 	public:
-		using iterator_category = std::bidirectional_iterator_tag;
-		using value_type = T;
-		using difference_type = std::ptrdiff_t;
-		using pointer = T*;
-		using reference = T&;
-
 		reverse_iterator() = default;
-		reverse_iterator(link* l) : iterator_base(l) {}
-		reverse_iterator(const iterator& it) : iterator_base(it) {}
-		reverse_iterator(const reverse_iterator& revit) : iterator_base(revit) {}
-
-		reverse_iterator& operator++()
-		{
-			iterator_base::go_back();
-			return *this;
-		}
-
-		reverse_iterator operator++(int)
-		{
-			auto aux = *this;
-			iterator_base::go_back();
-			return aux;
-		}
-
-		reverse_iterator& operator--()
-		{
-			iterator_base::advance();
-			return *this;
-		}
-
-		reverse_iterator operator--(int)
-		{
-			auto aux = *this;
-			iterator_base::advance();
-			return aux;
-		}
+		reverse_iterator(link* l) : iterator_core(l) {}
+		reverse_iterator(const iterator& it) : iterator_core(it) {}
+		reverse_iterator(const reverse_iterator& revit) : iterator_core(revit) {}
 	};
 
 	[[nodiscard]] reverse_iterator rbegin()
@@ -622,47 +626,15 @@ public:
 		return &head;
 	}
 
-	class const_reverse_iterator : public iterator_base
+	class const_reverse_iterator : public reverse_iterator_base<const_reverse_iterator>, public const_iterator_base
 	{
 	public:
-		using iterator_category = std::bidirectional_iterator_tag;
-		using value_type = T;
-		using difference_type = std::ptrdiff_t;
-		using pointer = const T*;
-		using reference = const T&;
-
 		const_reverse_iterator() = default;
-		const_reverse_iterator(link* l) : iterator_base(l) {}
-		const_reverse_iterator(const iterator& it) : iterator_base(it) {}
-		const_reverse_iterator(const const_iterator& cit) : iterator_base(cit) {}
-		const_reverse_iterator(const reverse_iterator& revit) : iterator_base(revit) {}
-		const_reverse_iterator(const const_reverse_iterator& crevit) : iterator_base(crevit) {}
-
-		const_reverse_iterator& operator++()
-		{
-			iterator_base::go_back();
-			return *this;
-		}
-
-		const_reverse_iterator operator++(int)
-		{
-			auto aux = *this;
-			iterator_base::go_back();
-			return aux;
-		}
-
-		const_reverse_iterator& operator--()
-		{
-			iterator_base::advance();
-			return *this;
-		}
-
-		const_reverse_iterator operator--(int)
-		{
-			auto aux = *this;
-			iterator_base::advance();
-			return aux;
-		}
+		const_reverse_iterator(link* l) : iterator_core(l) {}
+		const_reverse_iterator(const iterator& it) : iterator_core(it) {}
+		const_reverse_iterator(const const_iterator& cit) : iterator_core(cit) {}
+		const_reverse_iterator(const reverse_iterator& revit) : iterator_core(revit) {}
+		const_reverse_iterator(const const_reverse_iterator& crevit) : iterator_core(crevit) {}
 	};
 
 	[[nodiscard]] const_reverse_iterator crbegin() const
