@@ -15,7 +15,7 @@ using dereference_returns_nonconst_reference = std::conjunction<
 >;
 
 #define ASSERT_DEREFERENCE_RETURNS_CONST_REFERENCE(It) \
-		static_assert(dereference_returns_const_reference<It>::value);
+    static_assert(dereference_returns_const_reference<It>::value, #It " must return const T& on dereference");
 
 #define ASSERT_DEREFERENCE_RETURNS_NONCONST_REFERENCE(It) \
-		static_assert(dereference_returns_nonconst_reference<It>::value);
+    static_assert(dereference_returns_nonconst_reference<It>::value, #It " must return T& on dereference");
