@@ -17,11 +17,21 @@ private:
 	struct link;
 	struct node;
 
+	class iterator_core;
+	class iterator_base;
+	class const_iterator_base;
+
+	template<typename IteratorType>
+	class forward_iterator_base;
+
+	template<typename IteratorType>
+	class reverse_iterator_base;
+
 public:
 	class iterator;
 	class const_iterator;
 	class reverse_iterator;
-	class const_reverse_iterator;
+	class const_reverse_iterator;	
 
 private:
 	link head;
