@@ -1,8 +1,14 @@
 #include <type_traits>
 #include "macros/INTEROP.MACRO.H"
 #include "macros/DEREFERENCE.MACRO.H"
+#include "macros/ASSERT_ITERATOR_STL_COMPAT.MACRO.H"
 #include "iterators_test_traits.h"
 #include "iterators_test.fixture.h"
+
+ASSERT_ITERATOR_STL_COMPAT(intlist::const_reverse_iterator);
+ASSERT_ITERATOR_STL_COMPAT(intlist::const_iterator);
+ASSERT_ITERATOR_STL_COMPAT(intlist::reverse_iterator);
+ASSERT_ITERATOR_STL_COMPAT(intlist::iterator);
 
 ASSERT_DEREFERENCE_RETURNS_CONST_REFERENCE(intlist::const_iterator);
 ASSERT_DEREFERENCE_RETURNS_CONST_REFERENCE(intlist::const_reverse_iterator);
