@@ -117,12 +117,12 @@ private:
 			linker = linker->previous;
 		}
 
-		T& get_value() 
+		T& get_value()
 		{
 			return extract_value<T>(linker);
 		}
 
-		const T& get_value() const 
+		const T& get_value() const
 		{
 			return extract_value<const T>(linker);
 		}
@@ -132,7 +132,7 @@ private:
 		using value_type = T;
 		using difference_type = std::ptrdiff_t;
 
-		iterator_core() = default;
+		iterator_core() : linker(nullptr) {}
 		iterator_core(link* l) : linker(l) {}
 		iterator_core(const iterator_core& other) : linker(other.linker) {}
 		virtual ~iterator_core() = default;
