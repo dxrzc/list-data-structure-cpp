@@ -97,15 +97,6 @@ private:
 			return linker;
 		}
 
-		template<typename U>
-		static U& extract_value(link* linker)
-		{
-			node* node_ptr = dynamic_cast<node*>(linker);
-			if (!node_ptr)
-				throw std::runtime_error("Invalid pointer: Cannot dereference non-node object.");
-			return node_ptr->value;
-		}
-
 	protected:
 		void go_next()
 		{
@@ -117,14 +108,12 @@ private:
 			linker = linker->previous;
 		}
 
-		T& get_value()
+		T& get_value() const 
 		{
-			return extract_value<T>(linker);
-		}
-
-		const T& get_value() const
-		{
-			return extract_value<const T>(linker);
+			node* node_ptr = dynamic_cast<node*>(linker);
+			if (!node_ptr)
+				throw std::runtime_error("Invalid pointer: Cannot dereference non-node object.");
+			return node_ptr->value;
 		}
 
 	public:
@@ -233,7 +222,7 @@ private:
 		using pointer = T*;
 		using reference = T&;
 
-		T& operator*()
+		T& operator*() const
 		{
 			return iterator_core::get_value();
 		}
