@@ -364,13 +364,13 @@ public:
 		nelms = 0;
 	}
 
-	list(const std::initializer_list<T>& list) : list()
+    list(const std::initializer_list<T>& list) : list<T>()
 	{
 		for (const T& e : list)
 			push_back(e);
 	}
 
-	list(const list& list) : list()
+    list(const list& list) : list<T>()
 	{
 		deep_copy(list);
 	}
