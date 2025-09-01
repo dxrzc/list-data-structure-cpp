@@ -2,3 +2,6 @@ CMakePresets.json
 .vs/
 /out
 /build
+
+.*
+CMakeLists.txt.user
