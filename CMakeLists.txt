@@ -1,4 +1,4 @@
-﻿cmake_minimum_required(VERSION 3.5)
+﻿cmake_minimum_required(VERSION 3.10)
 
 project(testing)
 
@@ -11,7 +11,7 @@ add_executable(testing
 	${TEST_SOURCES}
 )
 
-target_include_directories(
+target_include_directories(  
 	testing 
 	PRIVATE 
 	${CMAKE_CURRENT_SOURCE_DIR}
