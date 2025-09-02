@@ -1,5 +1,6 @@
-# List Data Structure
-Low-level circular doubly linked list data structure with head node in C++.
+# List Data Structure (C++20)
+
+This repository implements a generic circular doubly-linked list in C++20 from scratch.
 
 ![Image](https://github.com/user-attachments/assets/3ed9d27e-dde9-4359-acdd-2de750db8fd1)
 
@@ -17,9 +18,10 @@ Low-level circular doubly linked list data structure with head node in C++.
 - Splice the list into another list - Transfer elements from one list to another.
 - Remove elements conditionally – Remove elements based on a condition (remove_if).
 - Find element and return iterator to the cell – Locate elements and return an iterator to them.
+- Testing
 - Etc.
 
-## Build and run tests
+## Build and test
 ```
 git clone https://github.com/dxrzc/list-data-structure-cpp.git
 cd list-data-structure-cpp
@@ -30,7 +32,7 @@ cmake --build .
 ctest
 ```
 
-## Usage
+## Example usage
 Include the list.h file in a c++20 project. For example
 
 ```cpp
