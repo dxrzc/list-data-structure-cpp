@@ -5,7 +5,7 @@
 #include "compare-list.helper.h"
 #include "resource.helper.h"
 
-TEST(equal_operator, should_create_and_assign)
+TEST(assigment_operator, should_create_and_assign)
 {
 	intlist list{ 1, 2, 3 };
 	intlist newlist{ 3, 2, 1 };
@@ -13,7 +13,7 @@ TEST(equal_operator, should_create_and_assign)
 	EXPECT_TRUE(compare_list(newlist, list));
 }
 
-TEST_F(constructor_operations_test, equal_operator_should_delete_its_elements_before_assign)
+TEST_F(constructor_operations_test, assigment_operator_should_delete_its_elements_before_assign)
 {
 	list<test_resource> test_resource_list;
 
@@ -27,7 +27,7 @@ TEST_F(constructor_operations_test, equal_operator_should_delete_its_elements_be
 	EXPECT_EQ(test_resource::destructor_calls, 2);
 }
 
-TEST(equal_operator, should_work_successfully_if_is_used_with_itself)
+TEST(assigment_operator, should_work_successfully_if_is_used_with_itself)
 {
 	intlist list{ 1,2,3 };
 	const std::size_t current_size = list.size();
