@@ -17,7 +17,7 @@ Low-level circular doubly linked list data structure with head node in C++.
 - Splice the list into another list - Transfer elements from one list to another.
 - Remove elements conditionally – Remove elements based on a condition (remove_if).
 - Find element and return iterator to the cell – Locate elements and return an iterator to them.
-- ...
+- Etc.
 
 ## Build and run tests
 ```
@@ -27,65 +27,73 @@ mkdir build
 cd build
 cmake ..
 cmake --build .
-```
-
-Run tests with CTest
-```
 ctest
 ```
 
-Or run the executable manually
-```
-cd Debug
-./testing
-```
-
 ## Usage
-Copy the list.h file into your project and include it. For example:
+Include the list.h file in a c++20 project. For example
 
 ```cpp
 #include "list.h"
+#include <assert.h>
+#include <vector>
+#include <ranges>
 
-class Resource
+class User
 {
+public:
+	static unsigned short copies;
+
 private:
-	std::string test_string;
-	int test_int;
+	std::string id;
+	std::vector<std::string> items;
 
 public:
-	// default constructor deleted
-	Resource() = delete;
-
-	Resource(const std::string& test_string, int test_int)
-		: test_string(test_string), test_int(test_int) {}
-
-	friend std::ostream& operator<<(std::ostream& os, const Resource& res)
+	// No default constructor
+	User() = delete;
+	User(std::string&& id_, std::vector<std::string>&& items_) noexcept : id(std::move(id_)), items(std::move(items_)) {}
+	User(const User& user) : id(user.id), items(user.items) { ++User::copies; }
+	friend std::ostream& operator<<(std::ostream& os, const User& usr)
 	{
-		os << res.test_string << ' ' << res.test_int << '\n';
+		os << "User{id=\"" << usr.id << "\", items=[";
+		for (std::size_t i = 0; i < usr.items.size(); ++i) {
+			os << "\"" << usr.items[i] << "\"";
+			if (i + 1 < usr.items.size()) os << ", ";
+		}
+		os << "]}";
 		return os;
 	}
 };
 
+unsigned short User::copies = 0;
+
 int main()
 {
-	list<Resource> resources_list;
+	try
+	{
+		list<User> users;
 
-	// create and insert a resource
-	Resource test_resource ("test string 0", 0);
-	resources_list.push_back(test_resource);
+		// Create and insert
+		User user("user1ABC", { "item1", "item2", "item3" });
+		users.push_back(user);
 
-	// create a resource directly in the list
-	resources_list.emplace_back("test string 1", 1);
+		// Create directly in the list
+		users.emplace_back("user2CDE", std::vector<std::string>({ "item2", "item3", "item4" }));
 
-	for (const Resource& res : resources_list)
-		std::cout << res;
+		assert(User::copies == 1);
+		std::ranges::copy(users, std::ostream_iterator<User>(std::cout, "\n"));
+	}
+	catch (const std::exception& e)
+	{
+		std::cerr << e.what() << '\n';
+	}
 }
 ```
 
 Output: 
 ```
-test string 0 0
-test string 1 1
+User{id="user1ABC", items=["item1", "item2", "item3"]}
+User{id="user2CDE", items=["item2", "item3", "item4"]}
 ```
 
 
