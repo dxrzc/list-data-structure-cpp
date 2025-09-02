@@ -345,6 +345,18 @@ private:
 		return nullptr;
 	}
 
+	void move_list(list&& list)
+	{
+		nelms = list.nelms;
+		head.next = list.head.next;
+		head.previous = list.head.previous;
+		list.head.previous->next = &head;
+		list.head.next->previous = &head;
+		list.head.next = &list.head;
+		list.head.previous = &list.head;
+		list.nelms = 0;
+	}
+
 public:
 	template<class NoReverseIt>
 		requires std::same_as<NoReverseIt, iterator> || std::same_as<NoReverseIt, const_iterator>
@@ -386,6 +398,17 @@ public:
 		return *this;
 	}
 
+	list& operator=(list&& list) noexcept
+	{
+		if (this != &list)
+		{
+			clear();
+			move_list(std::move(list));
+		}
+
+		return *this;
+	}
+
 	bool operator==(const list& list) const noexcept
 	{
 		link* thislist = head.next;
@@ -410,14 +433,7 @@ public:
 
 	list(list&& list) noexcept
 	{
-		nelms = list.nelms;
-		head.next = list.head.next;
-		head.previous = list.head.previous;
-		list.head.previous->next = &head;
-		list.head.next->previous = &head;
-		list.head.next = &list.head;
-		list.head.previous = &list.head;
-		list.nelms = 0;
+		move_list(std::move(list));		
 	}
 
 	/*
