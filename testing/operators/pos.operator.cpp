@@ -19,3 +19,9 @@ TEST(subscript_operator, throw_out_of_range_error_if_index_is_out_of_bounds)
     intlist list {1,2,3};
     EXPECT_THROW(list[10], std::out_of_range);
 }
+
+TEST(subscript_operator, const_version_returns_expected_value)
+{
+    const intlist list {1,2,3};
+    EXPECT_EQ(list[0],1);
+}

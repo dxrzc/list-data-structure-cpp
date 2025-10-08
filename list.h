@@ -81,7 +81,7 @@ private:
 			: link(prev, nxt), value(std::forward<Args>(args)...) {}
 	};
 
-    link* find_pos(std::size_t pos)
+    link* find_pos(std::size_t pos) const 
     {
         if(empty())
             throw std::length_error("Empty list");
