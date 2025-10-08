@@ -35,14 +35,15 @@ Include the list.h file in a c++20 project. For example
 
 ```cpp
 #include "list.h"
+#include <algorithm>
 #include <assert.h>
+#include <iterator>
 #include <vector>
-#include <ranges>
 
 class User
 {
 public:
-	static unsigned short copies;
+	static inline unsigned short copies;
 
 private:
 	std::string id;
@@ -64,8 +65,6 @@ public:
 		return os;
 	}
 };
-
-unsigned short User::copies = 0;
 
 int main()
 {
