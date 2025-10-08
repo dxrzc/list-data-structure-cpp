@@ -381,6 +381,11 @@ public:
 		}
 	}
 
+    ~list()
+    {
+        clear();
+    }
+
 	list()
 	{
 		head.next = &head;
