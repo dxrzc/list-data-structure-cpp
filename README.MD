@@ -25,7 +25,10 @@ This repository implements a generic circular doubly-linked list in C++20 from s
 ```
 git clone https://github.com/dxrzc/list-data-structure-cpp.git
 cd list-data-structure-cpp
-cmake -S . -B build -G Ninja && cmake --build build
+# Configure
+cmake -S . -B build -G Ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+# Build
+cmake --build build
 cd build
 ctest
 ```
