@@ -3,7 +3,7 @@
 #include "compare-list.helper.h"
 #include "resource.helper.h"
 
-TEST(push_back_by_mov, should_push_at_end)
+TEST(push_back_mov_semantics, should_push_at_end)
 {
 	int new_value = 4;
 	intlist expected_list{ 1,2,3,new_value };
@@ -14,7 +14,7 @@ TEST(push_back_by_mov, should_push_at_end)
 	EXPECT_TRUE(compare_list(expected_list, list));
 }
 
-TEST_F(constructor_operations_test, push_back_by_mov_should_not_copy)
+TEST_F(constructor_operations_test, push_back_mov_semantics_should_not_copy)
 {
 	test_resource resource;
 	list<test_resource> test_resource_list;
@@ -24,7 +24,7 @@ TEST_F(constructor_operations_test, push_back_by_mov_should_not_copy)
 	EXPECT_EQ(test_resource::movement_constructor, 1);
 }
 
-TEST(push_back_by_mov, should_update_nelms)
+TEST(push_back_mov_semantics, should_update_nelms)
 {
 	intlist list{ 1,2,3 };
 	const std::size_t current_size = list.size();
