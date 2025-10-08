@@ -33,70 +33,98 @@ cd build
 ctest
 ```
 
-## Example usage
-Include the list.h file in a c++20 project. For example
+## Usage
+Include the list.h file in a c++20 project. For example:
 
 ```cpp
 #include "list.h"
-#include <iostream>
 #include <algorithm>
-#include <assert.h>
+#include <iostream>
 #include <iterator>
-#include <vector>
+#include <ostream>
 
 class User
 {
-public:
-	static inline unsigned short copies;
-
 private:
-	std::string id;
-	std::vector<std::string> items;
+    std::string m_username;
+    std::string m_id;
+    list<std::string> m_items;
 
 public:
-	// No default constructor
-	User() = delete;
-	User(std::string&& id_, std::vector<std::string>&& items_) noexcept : id(std::move(id_)), items(std::move(items_)) {}
-	User(const User& user) : id(user.id), items(user.items) { ++User::copies; }
-	friend std::ostream& operator<<(std::ostream& os, const User& usr)
-	{
-		os << "User{id=\"" << usr.id << "\", items=[";
-		for (std::size_t i = 0; i < usr.items.size(); ++i) {
-			os << "\"" << usr.items[i] << "\"";
-			if (i + 1 < usr.items.size()) os << ", ";
-		}
-		os << "]}";
-		return os;
-	}
+    User() = delete;
+    User(const User &rhs) = default;
+    User(User &&rhs) = default;
+
+    User(const std::string &username, const std::string &id, const list<std::string> &items = {})
+        : m_username(username),
+          m_id(id),
+          m_items(items)
+    {}
+
+    std::size_t add_item(const std::string &item_id)
+    {
+        m_items.push_back(item_id);
+        return m_items.size();
+    }
+
+    auto operator<=>(const User &user) const
+    {
+        return m_username <=> user.m_username;
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, const User &user)
+    {
+        os << "User { name:\"" << user.m_username << "\", id:\"" << user.m_id << "\", items:[";
+        for (std::size_t i = 0; i < user.m_items.size(); ++i)
+        {
+            os << "\"" << user.m_items[i] << "\"";
+            if (i + 1 < user.m_items.size())
+                os << ", ";
+        }
+        os << "]}";
+        return os;
+    }
 };
 
 int main()
 {
-	try
-	{
-		list<User> users;
+    try
+    {
+        list<User> users;
 
-		// Create and insert
-		User user("user1ABC", { "item1", "item2", "item3" });
-		users.push_back(user);
+        // Create and copy
+        User user1{"Lance", "1457"};
+        user1.add_item("item1");
+        user1.add_item("item2");
+        users.push_back(user1);
 
-		// Create directly in the list
-		users.emplace_back("user2CDE", std::vector<std::string>({ "item2", "item3", "item4" }));
+        // Create and "move"
+        User user2{"Conor", "54321"};
+        user2.add_item("itemA");
+        user2.add_item("itemB");
+        users.push_back(std::move(user2));
 
-		assert(User::copies == 1);
-		std::ranges::copy(users, std::ostream_iterator<User>(std::cout, "\n"));
-	}
-	catch (const std::exception& e)
-	{
-		std::cerr << e.what() << '\n';
-	}
+        // Create in list
+        users.emplace_back("Ryley", "12345", list<std::string>{"itemX", "itemY"});
+
+        // Sort by name
+        users.sort();
+
+        // Print
+        std::ranges::copy(users, std::ostream_iterator<User>(std::cout, "\n"));
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << e.what() << '\n';
+    }
 }
 ```
 
 Output: 
 ```
-User{id="user1ABC", items=["item1", "item2", "item3"]}
-User{id="user2CDE", items=["item2", "item3", "item4"]}
+User { name:"Conor", id:"54321", items:["itemA", "itemB"]}
+User { name:"Lance", id:"1457", items:["item1", "item2"]}
+User { name:"Ryley", id:"12345", items:["itemX", "itemY"]}
 ```
 
 
