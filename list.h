@@ -376,16 +376,16 @@ public:
 		nelms = 0;
 	}
 
-    list(const std::initializer_list<T>& list) : list<T>()
+    list(const std::initializer_list<T>& init_list) : list<T>()
 	{
-		for (const T& e : list)
-			push_back(e);
+        for (const T &e : init_list)
+            push_back(e);
 	}
 
-    list(const list& list) : list<T>()
+    list(const list& rhslist) : list<T>()
 	{
-		deep_copy(list);
-	}
+        deep_copy(rhslist);
+    }
 
 	list& operator=(const list& list)
 	{
