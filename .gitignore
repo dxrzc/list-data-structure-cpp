@@ -1,7 +1,6 @@
 CMakePresets.json
-.vs/
-/out
-/build
-
-.*
+.vs
+out
+build
+.cache
 CMakeLists.txt.user
