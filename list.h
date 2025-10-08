@@ -81,6 +81,18 @@ private:
 			: link(prev, nxt), value(std::forward<Args>(args)...) {}
 	};
 
+    link* find_pos(std::size_t pos)
+    {
+        if(empty())
+            throw std::length_error("Empty list");
+        if(pos> size())
+            throw std::out_of_range("Index out of bounds");
+        link* current = head.next;
+        for(std::size_t i = 0; i < pos; i ++ )
+            current = current->next;
+        return current;
+    }
+
 	void deep_copy(const list& list)
 	{
 		link* cell = list.head.next;
@@ -872,4 +884,14 @@ public:
 		head.previous = head.next;
 		head.next = head_prev;
 	}
+
+    const T& operator[] (std::size_t index) const
+    {
+        return static_cast<node*>(find_pos(index))->value; 
+    }
+
+    T& operator[] (std::size_t index)
+    {
+        return static_cast<node*>(find_pos(index))-> value;
+    }
 };
