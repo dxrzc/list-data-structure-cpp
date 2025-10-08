@@ -35,6 +35,7 @@ Include the list.h file in a c++20 project. For example
 
 ```cpp
 #include "list.h"
+#include <iostream>
 #include <algorithm>
 #include <assert.h>
 #include <iterator>
