@@ -11,7 +11,7 @@ This repository implements a generic circular doubly-linked list in C++20 from s
 - Reverse iterator class – Traverse the list in reverse order.
 - Const reverse iterator class – Immutable reverse iteration.
 - std::advance and foreach support when working with iterators
-- Movement semantic – Efficient resource transfer between lists.
+- Move semantics – Efficient resource transfer between lists.
 - Emplace elements – Construct elements directly in the list using arguments.
 - Reverse the list - Invert the order of the elements.
 - Sort the list - Sort elements using the QuickSort algorithm.
