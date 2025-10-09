@@ -12,6 +12,20 @@ TEST(assigment_operator, should_create_and_assign)
 	EXPECT_TRUE(compare_list(newlist, list));
 }
 
+TEST(assigment_operator, no_error_if_both_lists_empty)
+{
+    intlist l1;
+    intlist l2;
+    l1 = l2;
+}
+
+TEST(assigment_operator, no_error_if_other_list_empty)
+{
+    intlist l1 {1,2,3};
+    intlist l2;
+    l1 = l2;
+}
+
 TEST_F(constructor_operations_test, assigment_operator_should_delete_its_elements_before_assign)
 {
 	list<test_resource> test_resource_list;

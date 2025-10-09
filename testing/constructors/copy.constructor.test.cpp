@@ -18,6 +18,12 @@ TEST(copy_constructor, should_update_nelms)
 	EXPECT_EQ(list.size(), test_list.size());
 }
 
+TEST(copy_constructor, no_errors_if_other_list_empty)
+{
+    intlist other;
+    intlist list (other);
+}
+
 TEST(copy_constructor, should_not_make_changes_on_rhs_list)
 {
 	intlist list{ 1,2,3 };
