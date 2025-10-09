@@ -16,6 +16,12 @@ TEST_F(constructor_operations_test, mov_constructor_should_not_copy)
 	EXPECT_EQ(test_resource::instances_created, 3);
 }
 
+TEST(move_constructor, no_error_if_rhs_list_empty)
+{
+    intlist emptyl;
+    intlist l (std::move(emptyl));
+}
+
 TEST(move_constructor, rhs_list_should_be_empty)
 {
 	intlist test_list{ 1,2,3 };
