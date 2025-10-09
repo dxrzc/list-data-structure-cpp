@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include <array>
 #include "list.h"
 #include "intlist.typealias.helper.h"
 #include "compare-list.helper.h"
