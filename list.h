@@ -357,17 +357,22 @@ private:
 		return nullptr;
 	}
 
-	void move_list(list&& list)
-	{
-		nelms = list.nelms;
-		head.next = list.head.next;
-		head.previous = list.head.previous;
-		list.head.previous->next = &head;
-		list.head.next->previous = &head;
-		list.head.next = &list.head;
-		list.head.previous = &list.head;
-		list.nelms = 0;
-	}
+    // this functions assumes current list is already empty
+    void move_list(list &&other)
+    {
+       if(other.empty())
+           return;
+
+        head.next = other.head.next;
+        head.previous = other.head.previous;
+        head.next->previous = &head;
+        head.previous->next = &head;
+        nelms = other.nelms;
+        
+        other.head.next = &other.head;
+        other.head.previous = &other.head;
+        other.nelms = 0;
+    }
 
 public:
 	template<class NoReverseIt>
