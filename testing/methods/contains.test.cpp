@@ -9,7 +9,7 @@ TEST(contains, should_return_true_if_list_contains_the_value)
 	EXPECT_TRUE(list.contains(val));
 }
 
-TEST(contains, should_return_true_if_list_not_contains_the_value)
+TEST(contains, should_return_false_if_list_not_contains_the_value)
 {
 	const int val = 4;
 	intlist list{ 1,2,3 };
