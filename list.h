@@ -95,6 +95,9 @@ private:
 
 	void deep_copy(const list& list)
 	{
+        if(!empty())
+            throw std::runtime_error("clear() call is needed");
+
 		link* cell = list.head.next;
 
 		while (cell != &list.head)
@@ -357,9 +360,11 @@ private:
 		return nullptr;
 	}
 
-    // this functions assumes current list is already empty
     void move_list(list &&other)
     {
+       if(!empty())
+           throw new std::runtime_error("clear() call is needed");
+
        if(other.empty())
            return;
 
@@ -453,9 +458,9 @@ public:
 		return true;
 	}
 
-	list(list&& list) noexcept
+	list(list&& other): list<T>()
 	{
-		move_list(std::move(list));		
+		move_list(std::move(other));		
 	}
 
 	/*
