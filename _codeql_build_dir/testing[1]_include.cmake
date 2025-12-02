@@ -1,5 +1,0 @@
-if(EXISTS "/home/runner/work/list-data-structure-cpp/list-data-structure-cpp/_codeql_build_dir/testing[1]_tests.cmake")
-  include("/home/runner/work/list-data-structure-cpp/list-data-structure-cpp/_codeql_build_dir/testing[1]_tests.cmake")
-else()
-  add_test(testing_NOT_BUILT testing_NOT_BUILT)
-endif()
