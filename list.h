@@ -85,7 +85,7 @@ private:
     {
         if(empty())
             throw std::length_error("Empty list");
-        if(pos> size())
+        if(pos >= size())
             throw std::out_of_range("Index out of bounds");
         link* current = head.next;
         for(std::size_t i = 0; i < pos; i ++ )
@@ -179,9 +179,9 @@ private:
 
 		IteratorType operator++(int)
 		{
-			auto aux = *this;
+			IteratorType aux = static_cast<IteratorType&>(*this);
 			iterator_core::go_next();
-			return static_cast<IteratorType&>(*this);
+			return aux;
 		}
 
 		IteratorType& operator--()
@@ -192,9 +192,9 @@ private:
 
 		IteratorType operator--(int)
 		{
-			auto aux = *this;
+			IteratorType aux = static_cast<IteratorType&>(*this);
 			iterator_core::go_previous();
-			return static_cast<IteratorType&>(*this);
+			return aux;
 		}
 	};
 
@@ -210,9 +210,9 @@ private:
 
 		IteratorType operator++(int)
 		{
-			auto aux = *this;
+			IteratorType aux = static_cast<IteratorType&>(*this);
 			iterator_core::go_previous();
-			return static_cast<IteratorType&>(*this);
+			return aux;
 		}
 
 		IteratorType& operator--()
@@ -223,9 +223,9 @@ private:
 
 		IteratorType operator--(int)
 		{
-			auto aux = *this;
+			IteratorType aux = static_cast<IteratorType&>(*this);
 			iterator_core::go_next();
-			return static_cast<IteratorType&>(*this);
+			return aux;
 		}
 	};
 
@@ -345,7 +345,7 @@ private:
 		}
 	}
 
-	link* find_value(const T& value)
+	link* find_value(const T& value) const
 	{
 		link* current_cell = head.next;
 
@@ -363,7 +363,7 @@ private:
     void move_list(list &&other)
     {
        if(!empty())
-           throw new std::runtime_error("clear() call is needed");
+           throw std::runtime_error("clear() call is needed");
 
        if(other.empty())
            return;
