@@ -1,40 +1,55 @@
 # List Data Structure (C++20)
 
-This repository implements a generic circular doubly-linked list in C++20 from scratch.
+This repository provides a templated circular doubly linked list implemented in modern C++ (C++20), focusing on iterator support, move semantics, and correctness.
 
 ![Image](https://github.com/user-attachments/assets/3ed9d27e-dde9-4359-acdd-2de750db8fd1)
 
 ## Features
-- Flexible Head Construction - This data structure can be instantiated even if the template argument does not have a default constructor
-- Iterator class  – Standard iterator for list traversal.
-- Const iterator class - Immutabe standard iterator for list traversal
-- Reverse iterator class – Traverse the list in reverse order.
-- Const reverse iterator class – Immutable reverse iteration.
-- std::advance and foreach support when working with iterators
-- Move semantics – Efficient resource transfer between lists.
-- Emplace elements – Construct elements directly in the list using arguments.
-- Reverse the list - Invert the order of the elements.
-- Sort the list - Sort elements using the QuickSort algorithm.
-- Splice the list into another list - Transfer elements from one list to another.
-- Remove elements conditionally – Remove elements based on a condition (remove_if).
-- Find element and return iterator to the cell – Locate elements and return an iterator to them.
-- Testing
-- Etc.
+
+### Core design
+- Templated circular doubly linked list
+- Head node design that does not require a default-constructible type
+- Strong ownership and memory management guarantees
+
+### Iterators
+- Forward iterator
+- Const forward iterator
+- Reverse iterator
+- Const reverse iterator
+- Compatible with `std::advance`, range-based for loops, and standard algorithms
+
+### Operations
+- Copy and move semantics
+- In-place element construction (`emplace`)
+- Element access and traversal
+- Conditional removal (`remove_if`)
+- Element lookup returning iterators
+- List reversal
+- In-place sorting (QuickSort-based implementation)
+- Splicing elements between lists
+
+### Testing
+- Unit tests implemented using Google Test
 
 ## Build and test
-```
+
+### Requirements
+- C++20 compatible compiler
+- CMake
+- Ninja (recommended)
+```bash
 git clone https://github.com/dxrzc/list-data-structure-cpp.git
 cd list-data-structure-cpp
-# Configure
+
 cmake -S . -B build -G Ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-# Build
 cmake --build build
+
 cd build
 ctest
 ```
 
 ## Usage
-Include the list.h file in a c++20 project. For example:
+The following example demonstrates usage of the list with custom types, move semantics, sorting, and standard library interoperability.
 
 ```cpp
 #include "list.h"
