@@ -31,6 +31,11 @@ This repository provides a templated circular doubly linked list implemented in 
 ### Testing
 - Unit tests implemented using Google Test
 
+### Continuous integration
+Linux-based builds with compiler matrix:
+- GCC
+- Clang
+
 ## Build and test
 
 ### Requirements
