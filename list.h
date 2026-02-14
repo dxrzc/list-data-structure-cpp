@@ -121,6 +121,11 @@ private:
 	public:		
 		constexpr explicit list_iterator(linker_ptr l = nullptr): linker(l){}
 
+		linker_ptr get_linker() const noexcept 
+		{
+			return linker;
+		}
+
 		list_iterator& operator++()
 		{
 			linker = linker->next;
@@ -157,31 +162,26 @@ private:
 			return linker == other.linker;
 		}
 
-		// fixes reversed lookup ambiguity
-		[[nodiscard]] bool operator!=(const list_iterator& other) const
-		{
-			return linker != other.linker;
-		}
-
 		operator list_iterator<true>() const
 			requires(!is_const)
 		{
 			return list_iterator<true>(linker);
 		}
+		
+		[[nodiscard]] pointer operator->() const noexcept
+		{
+			return std::addressof(operator*());
+		}
 	};
 
-	// internal function to pop an element using an iterator
-	template<class It>
-	link* pop_position(It it)
+	// internal function to pop an element using an iterator	
+	link* pop_position(iterator it)
 	{
 		if (empty())
 			throw std::length_error("pop called on empty list");
 
-		node* target = dynamic_cast<node*>(it.get_internal_linker());
-		if (!target)
-			throw std::runtime_error("pop called on head");
-
-		link* it_linker = it.get_internal_linker();
+		node* target = static_cast<node*>(it.get_linker());		
+		link* it_linker = it.get_linker();
 		link* it_previous_linker = it_linker->previous;
 		link* it_next_linker = it_linker->next;
 
@@ -194,11 +194,11 @@ private:
 		return it_next_linker;
 	}
 
-	// internal function to create an element using an iterator
-	template<typename It, typename ...Args>
-	link* emplace_at(It it, Args&& ...args)
+	// internal function to create an element using an iterator	
+	template<typename ...Args>
+	link* emplace_at(iterator it, Args&& ...args)
 	{
-		link* it_linker = it.get_internal_linker();
+		link* it_linker = it.get_linker();
 		link* it_previous_linker = it_linker->previous;
 
 		link* new_node = new node(it_previous_linker, it_linker, std::forward<Args>(args)...);
@@ -215,6 +215,7 @@ private:
 		if (first == second)
 			return;
 
+		// TODO: stl 
 		if (first == &head || second == &head)
 			throw std::invalid_argument("You cant swap head");
 
@@ -521,24 +522,21 @@ public:
 	* @param it The iterator position where the new element will be created and inserted.
 	* @param args The arguments to forward to the constructor of the new element.
 	* @return An iterator pointing to the newly constructed element.
-	*/
-	template<typename It, typename ...Args>
-		requires IteratorLike<list, It>
-	It emplace(It it, Args&& ... args)
+	*/	
+	template<typename ...Args>
+	iterator emplace(iterator it, Args&& ... args)
 	{
-		return emplace_at<It>(it, std::forward<Args>(args)...);
+		return iterator(emplace_at(it, std::forward<Args>(args)...));
 	}
 
 	/*
 	* @brief Removes the element at the specified position.
 	* @param it The iterator pointing to the element to be removed.
 	* @return An iterator pointing to the element following the removed element.
-	*/
-	template<typename It>
-		requires IteratorLike<list, It>
-	It pop(It it)
+	*/	
+	iterator pop(iterator it)
 	{
-		return pop_position<It>(it);
+		return iterator(pop_position(it));
 	}
 
 	/*
@@ -546,19 +544,15 @@ public:
 	* @param it The iterator position where the new element will be inserted
 	* @param new_value The value to insert into the list.
 	* @return An iterator pointing to the newly inserted element.
-	*/
-	template<typename It>
-		requires IteratorLike<list, It>
-	It insert(It it, const T& newvalue)
+	*/	
+	iterator insert(iterator it, const T& newvalue)
 	{
-		return emplace<It>(it, newvalue);
+		return emplace(it, newvalue);
 	}
-
-	template<typename It>
-		requires IteratorLike<list, It>
-	It insert(It it, T&& new_value)
+	
+	iterator insert(iterator it, T&& new_value)
 	{
-		return emplace<It>(it, std::move(new_value));
+		return emplace(it, std::move(new_value));
 	}
 
 	/*
@@ -570,7 +564,7 @@ public:
 	std::size_t remove_if(Condition condition)
 	{
 		std::size_t total_removed = 0;
-		auto it = cbegin();
+		auto it = begin();
 
 		while (it != cend())
 		{
@@ -590,12 +584,10 @@ public:
 	* @brief Splices another list into this list at a specified position.
 	* @param where where The position iterator in this list where the elements of `rightlist` will be inserted.
 	* @param rightlist The list to be spliced into this list. It will be empty after this operation.
-	*/
-	template<typename It>
-		requires IteratorLike<list, It>
-	void splice(It where, list& rightlist)
+	*/	
+	void splice(iterator where, list& rightlist)
 	{
-		link* lnk = where.get_internal_linker();
+		link* lnk = where.get_linker();
 		link* nextE = lnk->next;
 
 		lnk->next = rightlist.head.next;
@@ -617,9 +609,9 @@ public:
 
 		auto get_linker_at = [&](std::size_t pos)-> link*
 		{
-			const_iterator it = cbegin();
+			iterator it = begin();
 			std::advance(it, pos);
-			return it.get_internal_linker();
+			return it.get_linker();
 		};
 
 		auto median_of_three = [&](std::size_t a, std::size_t b, std::size_t c)
@@ -675,7 +667,7 @@ public:
 	{
 		link* cell = find_value(value);
 		if (cell)
-			return cell;
+			return iterator(cell);
 		else
 			return end();
 	}
