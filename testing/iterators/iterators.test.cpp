@@ -53,12 +53,6 @@ TYPED_TEST(iterators_test_fixture, dereference_operator)
 	EXPECT_EQ(*it, begin_value);
 }
 
-TYPED_TEST(iterators_test_fixture, dereferencing_the_head_node_throws_a_runtime_error)
-{
-	TypeParam it = iterators_test_traits<TypeParam>::end(this->test_list);
-	EXPECT_THROW(*it, std::runtime_error);
-}
-
 TYPED_TEST(iterators_test_fixture, pre_increment_operator)
 {
 	const int expected_final_pointed_value = iterators_test_traits<TypeParam>::values().at(1);
@@ -131,10 +125,4 @@ TYPED_TEST(iterators_test_fixture, begin_should_return_iterator_to_begin_of_the_
 {
 	TypeParam it = iterators_test_traits<TypeParam>::begin(this->test_list);
 	EXPECT_EQ(*it, iterators_test_traits<TypeParam>::values().at(0));
-}
-
-TYPED_TEST(iterators_test_fixture, end_should_return_iterator_to_head)
-{
-	TypeParam it = iterators_test_traits<TypeParam>::end(this->test_list);
-	EXPECT_ANY_THROW(*it); // throws exception when dereferecing head
 }

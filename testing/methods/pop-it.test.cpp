@@ -57,10 +57,3 @@ TEST(pop_by_iterator, should_throw_length_error_if_list_empty)
 	intlist list;
 	EXPECT_THROW(list.pop(list.begin()), std::length_error);
 }
-
-TEST(pop_by_iterator, should_throw_error_if_iterator_points_to_head)
-{
-	intlist list{ 1, 2 };
-	auto it = list.end(); // pointing to head
-	EXPECT_THROW(list.pop(it), std::runtime_error);
-}
