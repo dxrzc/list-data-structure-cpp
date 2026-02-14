@@ -7,10 +7,11 @@
 template<class T>
 class list
 {
-public:
+private:
 	template<bool is_const>
 	class list_iterator;
 
+public:
 	using iterator = list_iterator<false>;
 	using const_iterator = list_iterator<true>;
 	using reverse_iterator = std::reverse_iterator<iterator>;
