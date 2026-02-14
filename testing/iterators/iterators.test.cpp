@@ -1,4 +1,4 @@
-#include <type_traits>
+﻿#include <type_traits>
 #include "macros/INTEROP.MACRO.H"
 #include "macros/DEREFERENCE.MACRO.H"
 #include "macros/ASSERT_ITERATOR_STL_COMPAT.MACRO.H"
@@ -16,20 +16,12 @@ ASSERT_DEREFERENCE_RETURNS_CONST_REFERENCE(intlist::const_reverse_iterator);
 ASSERT_DEREFERENCE_RETURNS_NONCONST_REFERENCE(intlist::iterator);
 ASSERT_DEREFERENCE_RETURNS_NONCONST_REFERENCE(intlist::reverse_iterator);
 
-ASSERT_INTEROP(intlist::iterator, intlist::reverse_iterator);
-ASSERT_NO_INTEROP(intlist::iterator, intlist::const_reverse_iterator);
-ASSERT_NO_INTEROP(intlist::iterator, intlist::const_iterator);
+// iterator → const_iterator
+ASSERT_INTEROP(intlist::const_iterator, intlist::iterator);
+ASSERT_INTEROP(intlist::const_reverse_iterator, intlist::reverse_iterator);
+ASSERT_INTEROP(intlist::const_iterator, intlist::iterator);
+ASSERT_INTEROP(intlist::const_reverse_iterator, intlist::reverse_iterator);
 
-ASSERT_INTEROP(intlist::reverse_iterator, intlist::iterator);
-ASSERT_NO_INTEROP(intlist::reverse_iterator, intlist::const_iterator);
-ASSERT_NO_INTEROP(intlist::reverse_iterator, intlist::const_reverse_iterator);
-
-ASSERT_INTEROP(intlist::const_reverse_iterator, intlist::const_iterator);
-ASSERT_INTEROP(intlist::const_reverse_iterator, intlist::iterator);
-
-ASSERT_INTEROP(intlist::const_iterator, intlist::const_reverse_iterator)
-ASSERT_INTEROP(intlist::const_iterator, intlist::iterator)
-ASSERT_INTEROP(intlist::const_iterator, intlist::reverse_iterator)
 
 TYPED_TEST(iterators_test_fixture, constructor_no_fatal_failure_if_rhs_iterator_is_not_initialized)
 {
