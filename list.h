@@ -209,10 +209,6 @@ private:
 		if (first == second)
 			return;
 
-		// TODO: stl 
-		if (first == &head || second == &head)
-			throw std::invalid_argument("You cant swap head");
-
 		link* first_previous_linker = first->previous;
 		link* first_next_linker = first->next;
 
