@@ -4,12 +4,6 @@
 #include <utility>
 #include <functional>
 
-template <typename List, typename It>
-concept IteratorLike = std::same_as<It, typename List::iterator>
-|| std::same_as<It, typename List::const_iterator>
-|| std::same_as<It, typename List::reverse_iterator>
-|| std::same_as<It, typename List::const_reverse_iterator>;
-
 template<class T>
 class list
 {
