@@ -13,27 +13,18 @@ concept IteratorLike = std::same_as<It, typename List::iterator>
 template<class T>
 class list
 {
+public:
+	template<bool is_const>
+	class list_iterator;
+
+	using iterator = list_iterator<false>;
+	using const_iterator = list_iterator<true>;
+	using reverse_iterator = std::reverse_iterator<iterator>;
+	using const_reverse_iterator = std::reverse_iterator<const_iterator>;	
+
 private:
 	struct link;
 	struct node;
-
-	class iterator_core;
-	class iterator_base;
-	class const_iterator_base;
-
-	template<typename IteratorType>
-	class forward_iterator_base;
-
-	template<typename IteratorType>
-	class reverse_iterator_base;
-
-public:
-	class iterator;
-	class const_iterator;
-	class reverse_iterator;
-	class const_reverse_iterator;	
-
-private:
 	link head;
 	std::size_t nelms;
 
@@ -112,144 +103,70 @@ private:
 		}
 	}
 
-	class iterator_core
+	template <bool is_const>
+	class list_iterator
 	{
-	private:
-		link* linker;
-
-		link* get_internal_linker() const noexcept
-		{
-			return linker;
-		}
-
-	protected:
-		void go_next()
-		{
-			linker = linker->next;
-		}
-
-		void go_previous()
-		{
-			linker = linker->previous;
-		}
-
-		T& get_value() const 
-		{
-			node* node_ptr = dynamic_cast<node*>(linker);
-			if (!node_ptr)
-				throw std::runtime_error("Invalid pointer: Cannot dereference non-node object.");
-			return node_ptr->value;
-		}
-
 	public:
 		using iterator_category = std::bidirectional_iterator_tag;
 		using value_type = T;
 		using difference_type = std::ptrdiff_t;
+		using reference = std::conditional_t<is_const, const T&, T&>;
+		using pointer = std::conditional_t<is_const, const T*, T*>;
 
-		iterator_core() : linker(nullptr) {}
-		iterator_core(link* l) : linker(l) {}
-		iterator_core(const iterator_core& other) : linker(other.linker) {}
-		virtual ~iterator_core() = default;
+	private:		
+		using linker_ptr = std::conditional_t<is_const, const link*, link*>;
+		using node_ptr = std::conditional_t<is_const, const node*, node*>;
+		linker_ptr linker;
 
-		iterator_core& operator=(const iterator_core& other)
+	public:		
+		constexpr explicit list_iterator(linker_ptr l = nullptr): linker(l){}
+
+		list_iterator& operator++()
 		{
-			if (this != &other)
-				linker = other.linker;
+			linker = linker->next;
 			return *this;
 		}
 
-		bool operator==(const iterator_core& other) const noexcept
+		list_iterator operator++(int)
+		{
+			auto aux = *this;
+			linker = linker->next;
+			return aux;
+		}
+
+		list_iterator& operator--()
+		{
+			linker = linker->previous;
+			return *this;
+		}
+
+		list_iterator operator--(int)
+		{
+			auto aux = *this;
+			linker = linker->previous;
+			return aux;
+		}
+
+		[[nodiscard]] reference operator*() const noexcept
+		{
+			return static_cast<node_ptr>(linker)->value;
+		}
+
+		[[nodiscard]] bool operator==(const list_iterator& other) const
 		{
 			return linker == other.linker;
 		}
 
-		// TODO: use a friend function instead of this
-		friend class list;
-	};
-
-	template<typename IteratorType>
-	class forward_iterator_base : public virtual iterator_core
-	{
-	public:
-		IteratorType& operator++()
+		// fixes reversed lookup ambiguity
+		[[nodiscard]] bool operator!=(const list_iterator& other) const
 		{
-			iterator_core::go_next();
-			return static_cast<IteratorType&>(*this);
+			return linker != other.linker;
 		}
 
-		IteratorType operator++(int)
+		operator list_iterator<true>() const
+			requires(!is_const)
 		{
-			IteratorType aux = static_cast<IteratorType&>(*this);
-			iterator_core::go_next();
-			return aux;
-		}
-
-		IteratorType& operator--()
-		{
-			iterator_core::go_previous();
-			return static_cast<IteratorType&>(*this);
-		}
-
-		IteratorType operator--(int)
-		{
-			IteratorType aux = static_cast<IteratorType&>(*this);
-			iterator_core::go_previous();
-			return aux;
-		}
-	};
-
-	template<typename IteratorType>
-	class reverse_iterator_base : public virtual iterator_core
-	{
-	public:
-		IteratorType& operator++()
-		{
-			iterator_core::go_previous();
-			return static_cast<IteratorType&>(*this);
-		}
-
-		IteratorType operator++(int)
-		{
-			IteratorType aux = static_cast<IteratorType&>(*this);
-			iterator_core::go_previous();
-			return aux;
-		}
-
-		IteratorType& operator--()
-		{
-			iterator_core::go_next();
-			return static_cast<IteratorType&>(*this);
-		}
-
-		IteratorType operator--(int)
-		{
-			IteratorType aux = static_cast<IteratorType&>(*this);
-			iterator_core::go_next();
-			return aux;
-		}
-	};
-
-	class const_iterator_base : public virtual iterator_core
-	{
-	public:
-		using pointer = const T*;
-		using reference = const T&;
-
-		const T& operator*() const
-		{
-			return iterator_core::get_value();
-		}
-	};
-
-	class iterator_base : public virtual iterator_core
-	{
-	public:
-		using pointer = T*;
-		using reference = T&;
-
-		T& operator*() const
-		{
-			return iterator_core::get_value();
+			return list_iterator<true>(linker);
 		}
 	};
 
@@ -270,7 +187,7 @@ private:
 
 		it_previous_linker->next = it_next_linker;
 		it_next_linker->previous = it_previous_linker;
-
+		
 		delete target;
 		--nelms;
 
@@ -599,96 +516,6 @@ public:
 		head.previous = &head;
 	}
 
-	class iterator : public forward_iterator_base<iterator>, public iterator_base
-	{
-	public:
-		iterator() = default;
-		iterator(link* l) : iterator_core(l) {}
-		iterator(const iterator& it) : iterator_core(it) {}
-		iterator(const reverse_iterator& revit) : iterator_core(revit) {}
-	};
-
-	[[nodiscard]] iterator begin()
-	{
-		return head.next;
-	}
-
-	[[nodiscard]] iterator end()
-	{
-		return &head;
-	}
-
-	class const_iterator : public forward_iterator_base<const_iterator>, public const_iterator_base
-	{
-	public:
-		const_iterator() = default;
-		const_iterator(link* l) : iterator_core(l) {}
-		const_iterator(const const_iterator& cit) : iterator_core(cit) {}
-		const_iterator(const reverse_iterator& revit) : iterator_core(revit) {}
-		const_iterator(const const_reverse_iterator& crevit) :iterator_core(crevit) {}
-		const_iterator(const iterator& it) :iterator_core(it) {}
-	};
-
-	[[nodiscard]] const_iterator cbegin() const
-	{
-		return head.next;
-	}
-
-	[[nodiscard]] const_iterator cend() const
-	{
-		return const_cast<link*>(&head);
-	}
-
-	[[nodiscard]] const_iterator begin() const
-	{
-		return head.next;
-	}
-
-	[[nodiscard]] const_iterator end() const
-	{
-		return const_cast<link*>(&head);
-	}
-
-	class reverse_iterator : public reverse_iterator_base<reverse_iterator>, public iterator_base
-	{
-	public:
-		reverse_iterator() = default;
-		reverse_iterator(link* l) : iterator_core(l) {}
-		reverse_iterator(const iterator& it) : iterator_core(it) {}
-		reverse_iterator(const reverse_iterator& revit) : iterator_core(revit) {}
-	};
-
-	[[nodiscard]] reverse_iterator rbegin()
-	{
-		return head.previous;
-	}
-
-	[[nodiscard]] reverse_iterator rend()
-	{
-		return &head;
-	}
-
-	class const_reverse_iterator : public reverse_iterator_base<const_reverse_iterator>, public const_iterator_base
-	{
-	public:
-		const_reverse_iterator() = default;
-		const_reverse_iterator(link* l) : iterator_core(l) {}
-		const_reverse_iterator(const iterator& it) : iterator_core(it) {}
-		const_reverse_iterator(const const_iterator& cit) : iterator_core(cit) {}
-		const_reverse_iterator(const reverse_iterator& revit) : iterator_core(revit) {}
-		const_reverse_iterator(const const_reverse_iterator& crevit) : iterator_core(crevit) {}
-	};
-
-	[[nodiscard]] const_reverse_iterator crbegin() const
-	{
-		return head.previous;
-	}
-
-	[[nodiscard]] const_reverse_iterator crend() const
-	{
-		return const_cast<link*>(&head);
-	}
-
 	/*
 	* @brief Constructs and inserts a new element at the specified position.
 	* @param it The iterator position where the new element will be created and inserted.
@@ -909,4 +736,64 @@ public:
     {
         return static_cast<node*>(find_pos(index))-> value;
     }
+
+	[[nodiscard]] iterator begin() noexcept
+	{
+		return iterator(head.next);
+	}
+
+	[[nodiscard]] iterator end() noexcept
+	{
+		return iterator(&head);
+	}
+
+	[[nodiscard]] const_iterator begin() const noexcept
+	{
+		return const_iterator(head.next);
+	}
+
+	[[nodiscard]] const_iterator end() const noexcept
+	{
+		return const_iterator(&head);
+	}
+
+	[[nodiscard]] const_iterator cbegin() const noexcept
+	{
+		return begin();
+	}
+
+	[[nodiscard]] const_iterator cend() const noexcept
+	{
+		return end();
+	}
+
+	[[nodiscard]] reverse_iterator rbegin() noexcept
+	{
+		return reverse_iterator(end());
+	}
+
+	[[nodiscard]] reverse_iterator rend() noexcept
+	{
+		return reverse_iterator(begin());
+	}
+
+	[[nodiscard]] const_reverse_iterator rbegin() const noexcept
+	{
+		return const_reverse_iterator(end());
+	}
+
+	[[nodiscard]] const_reverse_iterator rend() const noexcept
+	{
+		return const_reverse_iterator(begin());
+	}
+
+	[[nodiscard]] const_reverse_iterator crbegin() const noexcept
+	{
+		return const_reverse_iterator(cend());
+	}
+
+	[[nodiscard]] const_reverse_iterator crend() const noexcept
+	{
+		return const_reverse_iterator(cbegin());
+	}
 };
